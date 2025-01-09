@@ -98,12 +98,19 @@ const MAX_RECONNECT_DELAY = 5000
 let reconnectTimeout = null
 
 const connectWebSocket = () => {
-  if (ws?.readyState === WebSocket.OPEN) return
+  // Clear any existing connection first
+  if (ws) {
+    ws.close()
+    ws = null
+  }
+
+  if (reconnectTimeout) {
+    clearTimeout(reconnectTimeout)
+    reconnectTimeout = null
+  }
 
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
   const wsUrl = `${protocol}//${window.location.host}/api/spotify`
-
-  console.log(`Attempting to connect to WebSocket at ${wsUrl}`)
 
   ws = new WebSocket(wsUrl)
 

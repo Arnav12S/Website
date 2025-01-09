@@ -99,6 +99,12 @@ export default defineWebSocketHandler({
 		} catch (err) {
 			console.error('WebSocket message error:', err)
 		}
+	},
+
+	error(peer, error) {
+		console.error('WebSocket error:', error)
+		// Attempt cleanup
+		connectedPeers.delete(peer)
 	}
 })
 

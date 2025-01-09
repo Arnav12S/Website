@@ -6,18 +6,17 @@ export default defineNuxtConfig({
 
   nitro: {
     experimental: {
-      websocket: true
+      websocket: true,
+      openAPI: true
     },
   },
 
   modules: [
     '@nuxt/ui',
     '@nuxt/eslint',
-    '@nuxtjs/mdc',
-    '@nuxt/content',
     '@vueuse/nuxt',
     '@nuxthub/core',
-    '@nuxthq/studio',
+    '@nuxthq/studio'
   ],
 
   css: ['~/assets/css/main.css'],

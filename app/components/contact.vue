@@ -76,6 +76,7 @@ const form = reactive({
 const errormsg = 'An error occurred. Please try again, or message me on one of my socials instead.'
 
 async function submitForm() {
+  console.log('Form submission triggered')
   loading.value = true
   error.value = false
 

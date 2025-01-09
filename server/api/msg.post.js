@@ -1,71 +1,64 @@
 import Mailjet from 'node-mailjet'
-import { setHeader } from 'h3'
+import { setHeader, readBody } from 'h3'
 
 export default defineEventHandler(async (event) => {
 	// Set CORS headers
-	setHeader(event, 'Access-Control-Allow-Origin', '*') // Adjust origin as needed
+	setHeader(event, 'Access-Control-Allow-Origin', '*')
 	setHeader(event, 'Access-Control-Allow-Methods', 'POST')
 	setHeader(event, 'Access-Control-Allow-Headers', 'Content-Type')
 
 	const body = await readBody(event)
 
-	if (body) {
-		const { name, email, message } = body
-		console.log({ name, email, message })
+	if (!body) {
+		console.warn('No body in the request.')
+		return { message: 'Only POST requests with body are accepted.', error: true }
+	}
 
-		function newLine(str) {
-			return str.replace(/(?:\r\n|\r|\n)/g, '<br>')
+	const { name, email, message } = body
+	console.log('Received form data:', { name, email, message })
+
+	// Validate environment variables
+	if (!process.env.MAILJET_API_KEY || !process.env.MAILJET_API_SECRET) {
+		console.error('Missing Mailjet credentials')
+		return { 
+			message: 'Server configuration error', 
+			error: true 
 		}
+	}
 
-		const emailBody = `<strong>${name}</strong> sent you this message:
-		<br /><br />
-		${newLine(message)}
-		<br /><br />
-		--- <br />
-		Reply directly to <strong>${name}</strong> at <a href="mailto:${email}">${email}</a>`
-
+	try {
+		// Initialize Mailjet client using the older method
 		const mailjet = Mailjet.apiConnect(
 			process.env.MAILJET_API_KEY,
 			process.env.MAILJET_API_SECRET
 		)
 
-		try {
-			const result = await mailjet
-				.post('send', { version: 'v3.1' })
-				.request({
-					Messages: [
-						{
-							From: {
-								Email: "noreply@arnav.blog",
-								Name: "Website Contact Form"
-							},
-							ReplyTo: {
-								Email: email,
-								Name: name
-							},
-							To: [
-								{
-									Email: "hi@arnav.blog",
-									Name: "Arnav"
-								}
-							],
-							Subject: `${name} sent you a message via website`,
-							TextPart: `${name} (${email}) sent you this message:\n\n${message}`,
-							HTMLPart: emailBody,
-							Headers: {
-								"Reply-To": `${name} <${email}>`
-							}
-						}
-					]
-				})
+		const result = await mailjet.post('send', { version: 'v3.1' }).request({
+			Messages: [{
+				From: {
+						Email: "noreply@arnav.blog",
+						Name: "Website Contact Form"
+				},
+				To: [{
+					Email: "hi@arnav.blog",
+					Name: "Arnav"
+				}],
+				Subject: `${name} sent you a message via website`,
+				TextPart: `${name} (${email}) sent you this message:\n\n${message}`,
+				HTMLPart: `<strong>${name}</strong> sent you this message:<br/><br/>${message.replace(/\n/g, '<br/>')}<br/><br/>Reply directly to <strong>${name}</strong> at <a href="mailto:${email}">${email}</a>`,
+				Headers: {
+					"Reply-To": `${name} <${email}>`
+				}
+			}]
+		})
 
-			console.log('Email sent:', result.body)
-			return { body, message: 'Success', error: false }
-		} catch (error) {
-			console.error('Email error:', error)
-			return { body, message: error.message || 'Unknown error', error: true }
+		console.log('Email sent successfully:', result.body)
+		return { success: true, message: 'Message sent successfully', error: false }
+	} catch (error) {
+		console.error('Failed to send email:', error)
+		return { 
+			message: `Failed to send message: ${error.message}`, 
+			error: true 
 		}
-	} else {
-		return { message: 'Only POST requests are accepted.' }
 	}
 })
