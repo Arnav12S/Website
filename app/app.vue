@@ -1,6 +1,6 @@
 <template>
   <main>
-    <nav v-if="$route.meta.title !== 'notfound'" class="py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <nav v-if="$route.meta.title !== 'notfound'" class="py-4 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div class="flex justify-between items-center max-w-3xl mx-auto">
         <nuxt-link to="/">
           <img 
@@ -26,15 +26,20 @@
             {{ link.text }}
           </nuxt-link>
           
+          <SearchButton />
           <ThemeToggle />
         </div>
-        <button class="md:hidden" @click="nav = !nav">
-          <UIcon 
-            name="i-lucide-menu" 
-            class="h-6 w-6 text-neutral dark:text-white" 
-            alt="Open navbar" 
-          />
-        </button>
+        <div class="flex items-center md:hidden">
+          <SearchButton />
+          <ThemeToggle />
+          <button class="ml-2" @click="nav = !nav">
+            <UIcon 
+              name="i-lucide-menu" 
+              class="h-6 w-6 text-neutral dark:text-white" 
+              alt="Open navbar" 
+            />
+          </button>
+        </div>
       </div>
     </nav>
 
@@ -93,17 +98,20 @@
         ]"
       />
     </div>
+    <AskAI />
   </main>
 </template>
 
 <script setup>
+import SearchButton from '~/components/SearchButton.vue'
+import AskAI from '~/components/AskAI.vue'
 const nav = ref(false)
 
 const navLinks = [
   { to: '/', text: 'Home' },
   { to: '/projects', text: 'Projects' },
   { to: '/explore', text: 'Explore' },
-  { to: '/cv', text: 'Cv' },
+  { to: '/cv', text: 'CV' },
   { to: '/blog', text: 'Blog' },
   { to: '/contact', text: 'Contact' }
 ]
@@ -112,4 +120,8 @@ watch(nav, (newVal) => {
   document.body.style.overflow = newVal ? 'hidden' : 'auto'
 })
 </script>
+
+<style scoped>
+/* Add any necessary styles here */
+</style>
 

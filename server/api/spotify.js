@@ -1,102 +1,108 @@
-import { getNowPlaying, getRecentlyPlayed } from '../lib/spotify'
-import { Filter } from 'bad-words'
-var filter = new Filter()
+import { defineWebSocketHandler } from 'h3'
+import { getCurrentPlaybackState, controlPlayback } from '../lib/spotify'
 
-export default defineEventHandler(async (event) => {
-	// Set headers to prevent caching
-	setHeaders(event, {
-		'Cache-Control': 'no-cache, no-store, must-revalidate',
-		'Pragma': 'no-cache',
-		'Expires': '0'
-	})
+const SPOTIFY_ROOM = 'spotify_room'
+const POLLING_INTERVAL = 3000 // Reduced polling interval for better responsiveness
+let lastPlayedTime = null
 
-	if (process.env.ENABLE_SPOTIFY == 'true') {
-		const response = await getNowPlaying()
+let lastKnownState = null
+let pollingIntervalId = null
+const connectedPeers = new Set()
 
-		if (response.status === 204 || response.status > 400) {
-			// Fetch recently played if not currently playing
-			try {
-				const recentResponse = await getRecentlyPlayed()
-				const recent = recentResponse?.items[0]
+const broadcastToRoom = (state) => {
+	for (const peer of connectedPeers) {
+		try {
+			peer.send(JSON.stringify({
+				type: 'spotify_update',
+				data: state
+			}))
+		} catch (error) {
+			console.error('Error broadcasting to peer:', error)
+		}
+	}
+}
 
-				if (recent) {
-					const lastPlayed = new Date(recent.played_at)
-					const timeAgo = getTimeAgo(lastPlayed)
+const startPolling = () => {
+	if (pollingIntervalId) return
 
-					return {
-						isPlaying: false,
-						lastPlayed: timeAgo,
-						album: recent.track.album.name,
-						albumImageUrl: recent.track.album.images[0]?.url || '',
-						artist: recent.track.artists.map((_artist) => _artist.name).join(', '),
-						songUrl: recent.track.external_urls.spotify,
-						title: filter.clean(recent.track.name) || recent.track.name,
-						cleanTitle: filter.clean(recent.track.name) || recent.track.name
-					}
-				} else {
-					return { isPlaying: false, message: 'No recent song data available' }
-				}
-			} catch (error) {
-				console.error('Error fetching recently played:', error)
-				return { isPlaying: false, message: 'Error fetching recently played tracks' }
+	const poll = async () => {
+		try {
+			const currentState = await getCurrentPlaybackState()
+			
+			if (!currentState.isPlaying && lastPlayedTime) {
+				currentState.lastPlayedAt = lastPlayedTime.toISOString()
 			}
+			
+			if (stateHasChanged(currentState, lastKnownState)) {
+				lastKnownState = currentState
+				broadcastToRoom(currentState)
+			}
+		} catch (error) {
+			console.error('Error polling playback state:', error)
+		}
+	}
+
+	poll()
+	
+	pollingIntervalId = setInterval(poll, POLLING_INTERVAL)
+}
+
+const stateHasChanged = (newState, oldState) => {
+	if (!oldState || !newState) return true
+	
+	if (oldState.isPlaying && !newState.isPlaying) {
+		lastPlayedTime = new Date()
+		newState.lastPlayedAt = lastPlayedTime.toISOString()
+	}
+	
+	const relevantFields = ['isPlaying', 'title', 'artist', 'albumImageUrl']
+	return relevantFields.some(field => newState[field] !== oldState[field])
+}
+
+export default defineWebSocketHandler({
+	open(peer) {
+		console.log('New WebSocket connection:', peer.id)
+		connectedPeers.add(peer)
+		peer.subscribe(SPOTIFY_ROOM)
+
+		// Send the last known state immediately upon connection
+		if (lastKnownState) {
+				peer.publish(SPOTIFY_ROOM, JSON.stringify({
+					type: 'spotify_update',
+					data: lastKnownState
+				}))
 		}
 
-		var albumImageUrl = ''
-		var songUrl = ''
-		const song = await response.json()
-		const isPlaying = song?.is_playing
-		const title = song?.item.name
-		const artist = song?.item.artists.map((_artist) => _artist.name).join(', ')
-		const album = song?.item.album.name
-		const cleanTitle = filter.clean(song?.item.name || '')
-		if (song?.item.album.images.length > 0) {
-			albumImageUrl = song?.item?.album?.images[0]?.url
-		}
-		if (song?.item.external_urls) {
-			songUrl = song?.item?.external_urls?.spotify
-		}
+		// Start polling if not already started
+		startPolling()
+	},
 
-		if (isPlaying) {
-			return {
-				album,
-				albumImageUrl,
-				artist,
-				isPlaying,
-				songUrl,
-				title,
-				cleanTitle
-			}
-		} else {
-			return {
-				isPlaying,
-				message: 'No song playing currently'
-			}
+	close(peer) {
+		console.log('WebSocket connection closed:', peer.id)
+		connectedPeers.delete(peer)
+		
+		// Stop polling if no more clients
+		if (connectedPeers.size === 0) {
+			clearInterval(pollingIntervalId)
+			pollingIntervalId = null
 		}
-	} else {
-		return {
-			isPlaying: false,
-			message:
-				'Spotify feature is disabled (check the `ENABLE_SPOTIFY` environment variable)'
+	},
+
+	async message(peer, message) {
+		try {
+			const parsed = JSON.parse(message.text())
+
+			if (parsed.type === 'playback_control' && parsed.action) {
+				await controlPlayback(parsed.action)
+				// The polling mechanism will handle broadcasting the new state
+			}
+		} catch (err) {
+			console.error('WebSocket message error:', err)
 		}
 	}
 })
 
-// Helper function to format time ago
-function getTimeAgo(date) {
-	const now = new Date()
-	const diffMs = now - date
-	const diffMins = Math.floor(diffMs / 60000)
-	const diffHours = Math.floor(diffMins / 60)
-	const diffDays = Math.floor(diffHours / 24)
-
-	if (diffMins < 1) return 'Just now'
-	if (diffMins === 1) return '1 minute ago'
-	if (diffMins < 60) return `${diffMins} minutes ago`
-	if (diffHours === 1) return '1 hour ago'
-	if (diffHours < 24) return `${diffHours} hours ago`
-	if (diffDays === 1) return 'Yesterday'
-	if (diffDays < 7) return `${diffDays} days ago`
-	
-	return date.toLocaleDateString()
+function getAllPeers() {
+	return Array.from(connectedPeers)
 }
+

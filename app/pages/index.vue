@@ -5,7 +5,7 @@
             <div data-aos="fade-in">
             <h1 class="text-4xl font-bold text-primary mb-2">arnav sudhansh</h1>
             <div class="mb-4">
-                <h2 class="text-xl text-neutral">
+                <h2 class="text-m font-bold md:text-xl md:font-normal text-neutral">
                 strategist · developer · problem solver
                 </h2>
             </div>
@@ -36,9 +36,9 @@
                 data-aos="fade-up"
                 class="block p-4 -mx-4 transition-all duration-200 hover:bg-neutral-50 dark:hover:bg-neutral-900 hover:translate-y-[-2px] rounded-lg"
               >
-                <div class="flex justify-between items-center">
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
                   <h3 class="text-lg font-medium text-primary">{{ page.title }}</h3>
-                  <p class="text-neutral">{{ page.desc }}</p>
+                  <p class="text-neutral text-sm sm:text-base">{{ page.desc }}</p>
                 </div>
               </NuxtLink>
             </div>

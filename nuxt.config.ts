@@ -4,11 +4,20 @@ import { resolve } from 'path'
 export default defineNuxtConfig({
   devtools: { enabled: true },
 
+  nitro: {
+    experimental: {
+      websocket: true
+    },
+  },
+
   modules: [
     '@nuxt/ui',
     '@nuxt/eslint',
     '@nuxtjs/mdc',
     '@nuxt/content',
+    '@vueuse/nuxt',
+    '@nuxthub/core',
+    '@nuxthq/studio',
   ],
 
   css: ['~/assets/css/main.css'],
@@ -52,10 +61,4 @@ export default defineNuxtConfig({
   },
 
   compatibilityDate: '2025-01-08',
-
-  colorMode: {
-    classSuffix: '',
-    preference: 'system',
-    fallback: 'light'
-  }
 })

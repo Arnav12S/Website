@@ -7,8 +7,8 @@ const {
 } = process.env
 
 const basic = Buffer.from(`${client_id}:${client_secret}`).toString('base64')
-const TOP_TRACKS_ENDPOINT = `https://api.spotify.com/v1/me/top/tracks?time_range=short_term`
-const TOKEN_ENDPOINT = `https://accounts.spotify.com/api/token`
+const TOP_TRACKS_ENDPOINT = 'https://api.spotify.com/v1/me/top/tracks?time_range=short_term'
+const TOKEN_ENDPOINT = 'https://accounts.spotify.com/api/token'
 
 params.append('grant_type', 'refresh_token')
 params.append('refresh_token', refresh_token)
@@ -23,15 +23,25 @@ const getAccessToken = async () => {
 		body: params.toString()
 	})
 
+	if (!response.ok) {
+		throw new Error('Failed to obtain access token for top tracks')
+	}
+
 	return response.json()
 }
 
 export const getTopTracks = async () => {
 	const { access_token } = await getAccessToken()
 
-	return fetch(TOP_TRACKS_ENDPOINT, {
+	const response = await fetch(TOP_TRACKS_ENDPOINT, {
 		headers: {
 			Authorization: `Bearer ${access_token}`
 		}
 	})
+
+	if (!response.ok) {
+		throw new Error('Failed to fetch top tracks')
+	}
+
+	return response
 }

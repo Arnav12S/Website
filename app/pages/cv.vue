@@ -1,4 +1,5 @@
 <template>
+  <UContainer>
   <div v-if="resumeData" class="min-h-screen flex flex-col justify-between p-4">
     <div class="w-full p-8 box-border">
       <!-- Header -->
@@ -57,6 +58,7 @@
       <!-- ... Other sections follow similar pattern ... -->
     </div>
   </div>
+  </UContainer>
 </template>
 
 <script setup>

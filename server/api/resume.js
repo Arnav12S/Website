@@ -55,14 +55,13 @@ export default eventHandler(async (event) => {
             if (sections.includes('all')) {
                 // Include all sections
                 responseData = { ...parsedData };
-            } else if (sections.includes('all-photo')) {
-                // Include all sections except photo
-                const { photo, ...rest } = parsedData;
-                responseData = rest;
+                if (!sections.includes('photo')) {
+                    delete responseData.photo; // Exclude photo unless explicitly included
+                }
             } else {
                 // Process section queries with addition and removal
                 const includeSections = [];
-                const excludeSections = [];
+                const excludeSections = ['photo']; // Always exclude photo unless specified
                 sections.forEach(sec => {
                     if (sec.startsWith('+')) {
                         includeSections.push(sec.slice(1).trim());
@@ -88,6 +87,9 @@ export default eventHandler(async (event) => {
                     }
                 });
             }
+        } else {
+            // Default behavior: exclude photo
+            delete responseData.photo;
         }
 
         console.log('Returning response data');

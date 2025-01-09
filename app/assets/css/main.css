@@ -26,3 +26,7 @@ body {
 @source "../content";
 
 @plugin "@tailwindcss/typography";
+
+.rounded-full {
+  border-radius: 9999px;
+}

@@ -43,6 +43,11 @@
 </template>
 
 <script setup>
+
 // No changes needed in script section
 </script>
+
+<style scoped>
+/* Add any necessary styles here */
+</style>
   
