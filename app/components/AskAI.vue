@@ -121,25 +121,10 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 
-/**
- * Example: This chatbot has been modified to:
- * 1. Show a single initial message welcoming the user.
- * 2. Support calling out to various endpoints (SERP, job-AI, analyze-job, etc.)
- *    if we detect the user wants to do specialized tasks.
- * 3. Provide step-by-step feedback to the user as we call each function.
- * 4. Conclude with a relevant answer or reference Arnav's resume endpoint: /api/resume
- * 5. Redesigned to be more mobile friendly by ensuring proper styling in small viewports.
- */
-
 const isChatbotOpen = ref(false)
 const messages = ref([])
 const userMessage = ref('')
 const loading = ref(false)
-/**
- * currentAction might be used to store what function we'll use next.
- * e.g. 'SERP_SEARCH', 'AI_ANALYZE_JOB', 'AI_QUESTION', etc.
- */
-const currentAction = ref(null)
 
 // Toggle chatbot visibility
 const toggleChatbot = () => {
@@ -156,70 +141,59 @@ const resetChat = () => {
 const initialMessage = () => {
   messages.value.push({
     sender: 'bot',
-    text: "Hi from Arnav, I'm an AI chatbot that can share more insights into Arnav's resume, experience, fit for a role or a project you're hiring for, and any questions you may have.",
+    text: "Hello! I'm a chatbot. How can I help you today?",
     time: new Date().toLocaleTimeString()
   });
 }
 
-// Option button example (optional)
-const handleOptionClick = (option) => {
-  // If you want to keep or reuse quick options, handle them here.
+// Add new function for API call
+const queryAI = async (userInput) => {
+  try {
+    const response = await fetch(`https://ai.arnav.blog/query?q=${encodeURIComponent(userInput)}`, {
+      method: 'GET',
+    })
+    const data = await response.json()
+    return data.response || 'Sorry, I could not generate a response.'
+  } catch (error) {
+    console.error('Error querying AI:', error)
+    return 'Sorry, I encountered an error. Please try again.'
+  }
 }
 
-/**
- * Main message handler with function routing
- */
+// Update sendMessage function
 const sendMessage = async () => {
-  const messageContent = userMessage.value.trim();
-  if (messageContent === '') return;
+  const messageContent = userMessage.value.trim()
+  if (messageContent === '') return
 
-  console.log('Sending message:', messageContent);
-
+  // Add user message
   messages.value.push({
     sender: 'user',
     text: messageContent,
     time: new Date().toLocaleTimeString()
-  });
-  userMessage.value = '';
+  })
+  userMessage.value = ''
 
-  messages.value.push({
+  // Add loading message
+  const loadingMessageIndex = messages.value.push({
     sender: 'bot',
     text: '',
     isLoading: true,
     time: new Date().toLocaleTimeString()
-  });
-  loading.value = true;
+  }) - 1
 
-  try {
-    const response = await fetch(`https://ai.arnav.blog/query?q=What are Arnav's key skills?&system=You are an AI assistant that summarizes information concisely.`, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    console.log('Response received:', data);
-
-    messages.value.pop();
-    messages.value.push({
-      sender: 'bot',
-      text: data,
-      time: new Date().toLocaleTimeString()
-    });
-  } catch (error) {
-    console.error('Error:', error);
-    messages.value.pop();
-    messages.value.push({
-      sender: 'bot',
-      text: 'Sorry, I encountered an error. Please try again.',
-      time: new Date().toLocaleTimeString()
-    });
-  } finally {
-    loading.value = false;
+  loading.value = true
+  
+  // Get AI response
+  const aiResponse = await queryAI(messageContent)
+  
+  // Update loading message with actual response
+  messages.value[loadingMessageIndex] = {
+    sender: 'bot',
+    text: aiResponse,
+    time: new Date().toLocaleTimeString()
   }
+  
+  loading.value = false
 }
 
 // Trigger sendMessage on Enter

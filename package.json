@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "^1.7.0",
+    "@nuxt/ui": "3.0.0-alpha.10",
     "@nuxthq/studio": "^2.2.1",
     "@nuxt/eslint": "^0.7.5",
     "@nuxthub/core": "^0.8.11",
