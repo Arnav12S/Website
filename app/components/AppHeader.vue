@@ -24,7 +24,7 @@ watch(nav, (newVal) => {
     v-if="$route.meta.title !== 'notfound'" 
     class="sticky top-0 z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm py-6 px-6 sm:px-8 lg:px-10 max-w-8xl mx-auto"
   >
-    <div class="flex justify-between items-center max-w-4xl mx-auto">
+    <div class="flex justify-between items-center gap-12 max-w-4xl mx-auto">
       <!-- Logo -->
       <nuxt-link to="/" class="flex-shrink-0">
         <img 

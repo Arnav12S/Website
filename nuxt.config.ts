@@ -73,5 +73,13 @@ export default defineNuxtConfig({
 
   content: {
     documentDriven: true
+  },
+  studio: {
+    enabled: true
+  },
+  database: {
+    type: 'd1'
+    binding : 'website'
+
   }
 })

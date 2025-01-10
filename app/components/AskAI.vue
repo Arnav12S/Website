@@ -151,16 +151,11 @@ const queryAI = async (userInput) => {
   try {
     const response = await fetch(`https://ai.arnav.blog/query?q=${encodeURIComponent(userInput)}`, {
       method: 'GET',
-      headers: {
-        'Origin': window.location.origin,
-        'Referer': window.location.href,
-        'Accept': '*/*'
-      }
     })
     const data = await response.json()
-    // Extract the nested response correctly
-    const formattedResponse = data?.response?.response || 'Sorry, I could not generate a response.'
-    return formattedResponse.replace(/\n/g, '<br>')
+    // Handle the nested response structure and format with line breaks
+    const formattedResponse = data?.response?.response?.replace(/\n/g, '<br>') || 'Sorry, I could not generate a response.'
+    return formattedResponse
   } catch (error) {
     console.error('Error querying AI:', error)
     return 'Sorry, I encountered an error. Please try again.'

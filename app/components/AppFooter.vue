@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-4xl mx-auto px-6">
+  <div class="max-w-6xl mx-auto px-6">
     <div class="flex justify-between items-start md:flex-row flex-col gap-8">
       <div class="flex-1">
         <Spotify />
