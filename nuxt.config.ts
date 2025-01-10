@@ -71,14 +71,11 @@ export default defineNuxtConfig({
     }
   },
 
-  content: {
-    documentDriven: true,
-    studio: {
-      enabled: true
-    },
-    database: {
-      type: 'd1',
-      binding : 'website'
+  studio: {
+    gitInfo: {
+      name: 'nuxt',
+      owner: 'Arnav12S',
+      url: 'https://github.com/Arnav12S/Website'    
     }
   }
 })
