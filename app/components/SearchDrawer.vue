@@ -47,7 +47,7 @@
             v-for="(item, index) in filteredItems" 
             :key="index" 
             :class="[
-              'p-2 rounded cursor-pointer',
+              'p-2 rounded cursor-pointer flex items-center justify-between',
               currentIndex === index ? 'bg-primary-100 dark:bg-primary-900' : 'hover:bg-gray-100 dark:hover:bg-gray-700'
             ]"
             @click="selectItem(item)"
@@ -55,7 +55,18 @@
             @keydown.enter="selectItem(item)"
             @mouseover="currentIndex = index"
           >
-            {{ item.text }}
+            <span>{{ item.text }}</span>
+            <span 
+              v-if="item.type"
+              :class="[
+                'text-xs px-2 py-1 rounded',
+                item.type === 'blog' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100' : 
+                item.type === 'project' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' :
+                'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-100'
+              ]"
+            >
+              {{ item.type }}
+            </span>
           </li>
         </ul>
       </div>
@@ -66,6 +77,7 @@
 <script setup>
 import { ref, watch, nextTick, onUnmounted, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useContent } from '#imports'
 
 const props = defineProps({
   isOpen: {
@@ -99,12 +111,42 @@ const lastFocusableElement = ref(null)
 
 const isMobileScreen = ref(false)
 
+// Add these new refs for content search
+const allItems = ref([])
+
+const { queryContent } = useContent()
+
+// Fetch content when component mounts
+onMounted(async () => {
+  // Fetch blog posts
+  const { data: posts } = await useAsyncData('blog-posts', () => queryContent('blog').find())
+  // Fetch projects
+  const { data: projects } = await useAsyncData('project-list', () => queryContent('projects').find())
+  
+  // Combine navigation items with content items
+  allItems.value = [
+    ...items.value,
+    ...(posts.value || []).map(post => ({
+      text: post.title,
+      to: `/blog/${post._path.split('/').pop()}`,
+      type: 'blog'
+    })),
+    ...(projects.value || []).map(project => ({
+      text: project.title,
+      to: `/projects/${project._path.split('/').pop()}`,
+      type: 'project'
+    }))
+  ]
+})
+
 const performSearch = () => {
   if (searchQuery.value.trim() === '') {
-    filteredItems.value = [...items.value]
+    filteredItems.value = [...allItems.value]
   } else {
     const query = searchQuery.value.toLowerCase()
-    filteredItems.value = items.value.filter(item => item.text.toLowerCase().includes(query))
+    filteredItems.value = allItems.value.filter(item => 
+      item.text.toLowerCase().includes(query)
+    )
   }
   currentIndex.value = -1
 }

@@ -1,30 +1,52 @@
-<script lang="ts" setup>
-definePageMeta({
-    layout: 'blog',
+<script setup lang="ts">
+import type { BlogPost } from '~/types'
+
+const { data: page } = await useAsyncData('blog', () => queryContent('/blog').findOne())
+if (!page.value) {
+  throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
+}
+
+const { data: posts } = await useAsyncData('posts', () => queryContent<BlogPost>('/blog')
+  .where({ _extension: 'md' })
+  .sort({ date: -1 })
+  .find())
+
+useSeoMeta({
+  title: page.value.title,
+  ogTitle: page.value.title,
+  description: page.value.description,
+  ogDescription: page.value.description
 })
-const { data: posts } = await useAsyncData('blog-posts', () => queryContent('blog').find());
+
+defineOgImageComponent('Saas')
 </script>
 
 <template>
-    <NuxtLayout name="blog">
-        <UCard>
-            <template #header>
-                <h1>Blog</h1>
-            <UButton icon="i-lucide-plus" to="/blog/new">New Blog</UButton>
-        </template>
-        <div>
-            <ul>
-                <li v-for="post in posts" :key="post._path">
-                    <NuxtLink :to="post._path">
-                        <h2>{{ post.title }}</h2>
-                    </NuxtLink>
-                </li>
-            </ul>
-        </div>
-    </UCard>
-</NuxtLayout>
-</template>
+  <UContainer>
+    <UPageHeader
+      v-bind="page"
+      class="py-[50px]"
+    />
 
-<style lang="postcss" scoped>
-    
-</style>
+    <UPageBody>
+      <UBlogList>
+        <UBlogPost
+          v-for="(post, index) in posts"
+          :key="index"
+          :to="post._path"
+          :title="post.title"
+          :description="post.description"
+          :image="post.image"
+          :date="new Date(post.date).toLocaleDateString('en', { year: 'numeric', month: 'short', day: 'numeric' })"
+          :authors="post.authors"
+          :badge="post.badge"
+          :orientation="index === 0 ? 'horizontal' : 'vertical'"
+          :class="[index === 0 && 'col-span-full']"
+          :ui="{
+            description: 'line-clamp-2'
+          }"
+        />
+      </UBlogList>
+    </UPageBody>
+  </UContainer>
+</template>

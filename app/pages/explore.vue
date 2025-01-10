@@ -1,73 +1,66 @@
+<script setup lang="ts">
+
+const { data: page } = await useAsyncData('explore', () => queryContent('/explore').findOne())
+if (!page.value) {
+	throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
+}
+
+useSeoMeta({
+	title: page.value.title,
+	ogTitle: page.value.title,
+	description: page.value.description,
+	ogDescription: page.value.description
+})
+</script>
+
 <template>
 	<UContainer>
 		<div>
-			<h2 class="text-3xl font-fancy mb-2">Explore</h2>
-			<p class="text-gray-600 mb-6">Dive into the many facets of my work and interests.</p>
+			<h2 class="text-3xl font-fancy mb-2">{{ page.title }}</h2>
+			<p class="text-gray-600 mb-6">{{ page.description }}</p>
 
-			<div data-aos="fade-up">
+			<div 
+				v-for="(section, index) in page.sections" 
+				:key="section.title"
+				data-aos="fade-up"
+				:data-aos-delay="index * 100"
+			>
 				<a
+					:href="section.url"
 					rel="noopener noreferrer"
 					target="_blank"
 				>
-					<div class="p-8 rounded-2xl mb-5 transition-colors duration-300 bg-blue-100/30 hover:bg-blue-100/40">
+					<div :class="[
+						'p-8 rounded-2xl mb-5 transition-colors duration-300',
+						`bg-${section.color}-100/30 hover:bg-${section.color}-100/40`
+					]">
 						<div class="flex items-center">
-							<h6 class="text-xl mb-1 mr-1 text-blue-800">Strategy & Design</h6>
+							<h6 :class="[
+								'text-xl mb-1 mr-1',
+								`text-${section.color}-800`
+							]">
+								{{ section.title }}
+								<span v-if="section.status">({{ section.status }})</span>
+							</h6>
 							<span>
-								<iconify-icon icon="bx:link-external" />
+								<iconify-icon :icon="section.icon" />
 							</span>
 						</div>
-						<p class="m-0">
-							(WIP) I'm passionate about strategic planning and product design, but I
-							also enjoy dabbling in data analytics and coding, with a bit of AI exploration on the side.
-						</p>
-					</div>
-				</a>
-			</div>
-
-			<div data-aos="fade-up" data-aos-delay="100">
-				<a
-					rel="noopener noreferrer"
-					target="_blank"
-				>
-					<div class="p-8 rounded-2xl mb-5 transition-colors duration-300 bg-cyan-100/30 hover:bg-cyan-100/40">
-						<div class="flex items-center">
-							<h6 class="text-xl mb-1 mr-1 text-green-700">Achievements</h6>
-							<span>
-								<iconify-icon icon="bx:link-external" />
-							</span>
-						</div>
-						<p class="m-0">
-							I've tackled numerous challenges across various domains—from strategic initiatives to hackathons and everything in between. Check out some of my victories and milestones.
-						</p>
-					</div>
-				</a>
-			</div>
-
-			<div data-aos="fade-up">
-				<a
-					rel="noopener noreferrer"
-					href="https://arnav.blog/cv"
-					target="_blank"
-				>
-					<div class="p-8 rounded-2xl mb-5 transition-colors duration-300 bg-purple-100/20 hover:bg-purple-100/30">
-						<div class="flex items-center">
-							<h6 class="text-xl mb-1 mr-1 text-purple-800">Résumé</h6>
-							<span>
-								<iconify-icon icon="bx:link-external" />
-							</span>
-						</div>
-						<p class="m-0">
-							Take a look at the projects I've been involved in and the roles I've played across different industries and countries.
-						</p>
+						<p class="m-0">{{ section.description }}</p>
 					</div>
 				</a>
 			</div>
 
 			<div class="my-8"></div>
 
-			<Top id="top-tracks" class="mb-16" />
-
-			<Website data-aos="fade-in" />
+			<component
+				v-for="comp in page.components"
+				:key="comp.id"
+				:is="comp.type"
+				:id="comp.id"
+				:class="comp.class"
+				:data-aos="comp.animation"
+			/>
 		</div>
 	</UContainer>
 </template>
