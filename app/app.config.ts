@@ -1,6 +1,13 @@
 export default defineAppConfig({
   ui: {
     primary: 'sky',
+    secondary: 'gray',
+    tertiary: 'blue',
+    success: 'green',
+    warning: 'yellow',
+    error: 'red',
+    info: 'sky',
+    neutral: 'gray',
     gray: 'cool',
     button: {
       rounded: 'rounded-full',

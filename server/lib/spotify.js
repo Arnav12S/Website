@@ -36,7 +36,6 @@ const getAccessToken = async () => {
 		}
 
 		const data = await response.json()
-		console.log('Access token obtained:', data.access_token)
 		return data
 	} catch (error) {
 		console.error('Error obtaining access token:', error)
@@ -64,7 +63,6 @@ export const getCurrentPlaybackState = async () => {
 		clearTimeout(timeout)
 
 		if (response.status === 204 || response.status > 400) {
-			console.warn('No current playback. Fetching recently played tracks.')
 			const recent = await getRecentlyPlayed()
 			const recentItem = recent?.items?.[0]
 			return formatRecentlyPlayed(recentItem)

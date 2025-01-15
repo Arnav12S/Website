@@ -4,10 +4,6 @@ import path from 'path';
 import fs from 'fs';
 
 export default eventHandler(async (event) => {
-    console.log('Handler invoked');
-    
-    // Debugging: Check if resumeData is imported correctly
-    console.log('Imported resumeData:', resumeData);
 
     try {
         const parsedData = { ...resumeData };
@@ -92,7 +88,6 @@ export default eventHandler(async (event) => {
             delete responseData.photo;
         }
 
-        console.log('Returning response data');
         return responseData;
 
     } catch (error) {

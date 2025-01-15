@@ -5,6 +5,7 @@ const { data: navigation } = await useAsyncData('navigation', () => fetchContent
 const { data: files } = useLazyFetch<ParsedContent[]>('/api/search.json', { default: () => [], server: false })
 
 provide('navigation', navigation)
+provide('files', files)
 </script>
 
 <template>
@@ -12,12 +13,5 @@ provide('navigation', navigation)
     <UMain>
       <slot />
     </UMain>
-
-    <ClientOnly>
-      <LazyUContentSearch
-        :files="files"
-        :navigation="navigation"
-      />
-    </ClientOnly>
   </div>
 </template>

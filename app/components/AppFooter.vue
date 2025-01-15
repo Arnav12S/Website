@@ -1,12 +1,12 @@
 <template>
   <div class="max-w-7xl mx-auto px-6 mb-8">
     <div class="flex justify-between items-start md:flex-row flex-col gap-8">
-      <div class="flex-1">
+      <div class="flex-1 w-full md:w-auto">
         <Spotify />
       </div>
 
-      <div class="flex-1 flex justify-end">
-        <div class="flex flex-col items-end">
+      <div class="flex-1 flex md:justify-end justify-center w-full">
+        <div class="flex flex-col items-center md:items-end">
           <div class="flex space-x-4">
             <a
               href="https://www.linkedin.com/in/arnav-sudhansh"

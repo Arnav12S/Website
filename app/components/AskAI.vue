@@ -7,7 +7,7 @@
       aria-label="Open ArnavAI Bot"
     >
       <UIcon 
-        name="i-lucide-message-circle" 
+        name="i-lucide-bot" 
         class="w-8 h-8 md:w-10 md:h-10" 
         aria-label="Bot Avatar" 
       />
@@ -22,7 +22,7 @@
       <div class="bg-primary text-black p-4 flex justify-between items-center">
         <div class="flex items-center gap-3">
           <UIcon 
-            name="i-lucide-message-circle" 
+            name="i-lucide-bot" 
             class="w-6 h-6 text-black" 
             aria-label="Bot Avatar" 
           />
@@ -58,7 +58,7 @@
         >
           <UIcon
             v-if="message.sender === 'bot'"
-            name="i-lucide-message-circle"
+            name="i-lucide-bot"
             class="w-8 h-8 mx-2"
             aria-label="Bot Avatar"
           />
@@ -141,7 +141,7 @@ const resetChat = () => {
 const initialMessage = () => {
   messages.value.push({
     sender: 'bot',
-    text: "Hello! I'm a chatbot. How can I help you today?",
+    text: "Hi! I'm Arnav's AI Bot, here to help you know Arnav better. Feel free to ask me about his experience, education, skills, or how he might be a great fit for your project or role!",
     time: new Date().toLocaleTimeString()
   });
 }

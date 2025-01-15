@@ -1,6 +1,19 @@
 <script setup lang="ts">
+import { ref, computed } from 'vue'
+import Header from '~/components/AppHeader.vue'
+import Footer from '~/components/AppFooter.vue'
 import AskAI from '~/components/AskAI.vue'
+import { useLinks } from './composables/useLinks'
+import type { ParsedContent } from '@nuxt/content'
 
+const { links } = useLinks()
+const { data: navigation } = await useAsyncData('navigation', () => fetchContentNavigation())
+const { data: files } = useLazyFetch<ParsedContent[]>('/api/search.json', { default: () => [], server: false })
+
+provide('navigation', navigation)
+provide('files', files)
+
+// Color Mode Handling
 const colorMode = useColorMode()
 const color = computed(() => colorMode.value === 'dark' ? '#111827' : 'white')
 
@@ -29,10 +42,15 @@ useSeoMeta({
 <template>
   <div class="min-h-screen flex flex-col">
     <NuxtLoadingIndicator />
-    <AppHeader />
-    <NuxtPage />
+    <Header :links="links" />
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
     <AskAI />
-    <AppFooter />
+    <Footer />
+    <ClientOnly>
+      <LazyUContentSearch :files="files" :navigation="navigation" :links="links" />
+    </ClientOnly>
     <UNotifications />
   </div>
 </template>

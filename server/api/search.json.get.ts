@@ -1,36 +1,44 @@
 import { serverQueryContent } from '#content/server'
 
 export default eventHandler(async (event) => {
-  const [projects, blogs] = await Promise.all([
-    // Get project overviews
-    serverQueryContent(event, 'projects')
-      .where({ 
-        _extension: 'md',
-        _path: /\/overview$/
-      })
-      .find(),
-    
-    // Get blog posts
-    serverQueryContent(event, 'blog')
-      .where({ 
-        _extension: 'md'
-      })
-      .find()
-  ])
+  const content = await serverQueryContent(event)
+    .where({
+      _type: { $in: ['markdown', 'json'] },
+      navigation: { $ne: false }
+    })
+    .find()
 
-  // Transform project data to include full content but only expose overview paths
-  const searchableProjects = projects.map(project => ({
-    ...project,
-    searchContent: project.body?.text, // Include full text for search
-    _path: project._path.replace('/overview', ''), // Clean up path
-    _type: 'project'
-  }))
+  // Enhance the search content for CV
+  const enhancedContent = content.map(item => {
+    if (item._path === '/cv') {
+      // Combine all relevant fields into a single searchable string
+      const searchableContent = [
+        item.title,
+        item.description,
+        item.summary,
+        ...item.experience.flatMap(exp => [
+          exp.title,
+          exp.company,
+          exp.duration,
+          exp.location,
+          ...exp.details
+        ]),
+        ...item.education.flatMap(edu => [
+          edu.degree,
+          edu.institution,
+          edu.location,
+          edu.year
+        ]),
+        ...item.skills
+      ].join(' ').toLowerCase() // Convert to lowercase for case-insensitive search
 
-  const searchableBlogs = blogs.map(blog => ({
-    ...blog,
-    searchContent: blog.body?.text,
-    _type: 'blog'
-  }))
+      return {
+        ...item,
+        _searchContent: searchableContent
+      }
+    }
+    return item
+  })
 
-  return [...searchableProjects, ...searchableBlogs]
+  return enhancedContent
 })
