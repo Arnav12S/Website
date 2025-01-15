@@ -60,6 +60,20 @@ const stateHasChanged = (newState, oldState) => {
 }
 
 export default defineWebSocketHandler({
+	protocol: 'spotify',
+
+	upgrade(req, res) {
+		const upgradeHeader = req.headers.upgrade || ''
+		if (upgradeHeader.toLowerCase() !== 'websocket') {
+			res.writeHead(426, {
+				'Connection': 'Upgrade',
+				'Upgrade': 'WebSocket'
+			})
+			return res.end()
+		}
+		return true
+	},
+
 	open(peer) {
 		console.log('New WebSocket connection:', peer.id)
 		connectedPeers.add(peer)
@@ -67,10 +81,10 @@ export default defineWebSocketHandler({
 
 		// Send the last known state immediately upon connection
 		if (lastKnownState) {
-				peer.publish(SPOTIFY_ROOM, JSON.stringify({
-					type: 'spotify_update',
-					data: lastKnownState
-				}))
+			peer.send(JSON.stringify({
+				type: 'spotify_update',
+				data: lastKnownState
+			}))
 		}
 
 		// Start polling if not already started

@@ -1,31 +1,46 @@
 title: Explore
-description: Dive into the many facets of my work and interests.
+description: A glimpse into my world - from coding adventures to my questionable music taste.
 navigation: false
+
 sections:
-  - title: Strategy & Design
-    description: I'm passionate about strategic planning and product design, but I also enjoy dabbling in data analytics and coding, with a bit of AI exploration on the side.
-    color: blue
-    icon: bx:link-external
-    url: null
-    status: WIP
+  - title: Current Obsessions
+    description: Things I can't stop talking about right now (sorry in advance)
+    color: violet
+    icon: i-mdi-star
+    items:
+      - title: Building Cool Stuff
+        description: Currently tinkering with AI, web development, and probably breaking something in the process
+      - title: Learning Japanese
+        description: はじめまして！Still figuring out which emoji works best in every situation
+      - title: Photography
+        description: Amateur photographer, professional Instagram husband
 
-  - title: Achievements
-    description: I've tackled numerous challenges across various domains—from strategic initiatives to hackathons and everything in between. Check out some of my victories and milestones.
-    color: cyan
-    icon: bx:link-external
-    url: null
+  - title: Fun Facts
+    description: Things you probably didn't need to know, but now you will
+    color: amber
+    icon: i-mdi-lightbulb
+    items:
+      - title: Coffee Addiction Level
+        description: ☕️☕️☕️☕️ (out of 5)
+      - title: Debugging Style
+        description: Print statements everywhere and hoping for the best
+      - title: Spirit Animal
+        description: A cat trying to code
 
-  - title: Résumé
-    description: Take a look at the projects I've been involved in and the roles I've played across different industries and countries.
-    color: purple
-    icon: bx:link-external
-    url: https://arnav.blog/cv
+  - title: Hobbies
+    description: What I do when I'm not staring at error messages
+    color: emerald
+    icon: i-mdi-controller
+    items:
+      - title: Gaming
+        description: From RPGs to indie gems
+      - title: Reading
+        description: Tech blogs by day, sci-fi novels by night
+      - title: Cooking
+        description: Experimental chef, occasional fire alarm tester
 
 components:
-  - id: top-tracks
-    type: Top
+  - id: spotify-section
+    type: SpotifySection
     class: mb-16
-  
-  - id: website
-    type: Website
-    animation: fade-in 
+    animation: fade-up 

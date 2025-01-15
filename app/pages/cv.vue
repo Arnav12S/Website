@@ -1,119 +1,234 @@
 <template>
-  <UContainer>
+  <div class="bg-gray-50 dark:bg-gray-900 min-h-screen">
     <!-- Print button -->
-    <button @click="printResume" class="print:hidden fixed top-4 right-4 p-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700">
-      <UIcon name="i-heroicons-printer" class="w-6 h-6" />
-    </button>
+    <div class="max-w-[95%] lg:max-w-[85%] xl:max-w-[75%] mx-auto text-right pt-4">
+      <button @click="printResume" class="print:hidden inline-flex items-center text-blue-600 hover:text-blue-700">
+        <UIcon name="i-heroicons-printer" class="w-5 h-5 mr-1" />
+        <span class="text-sm">Print</span>
+      </button>
+    </div>
 
-    <!-- Main resume container with A4 dimensions -->
-    <div v-if="page" class="a4-page print:shadow-none">
-      <div class="w-full p-8 box-border">
-        <!-- Header -->
-        <div class="flex justify-between items-center">
-          <div class="w-[2.5cm] h-[3cm] rounded-2xl overflow-hidden">
-            <img :src="page.header.image" :alt="page.header.name" class="w-full h-full object-cover">
+    <!-- Main resume container -->
+    <div v-if="page" class="max-w-[95%] lg:max-w-[85%] xl:max-w-[75%] mx-auto bg-white dark:bg-gray-800 shadow-sm print:shadow-none rounded-lg">
+      <div class="p-6 box-border">
+        <!-- Mobile Layout (and Print) -->
+        <div class="md:hidden print:block">
+          <div class="flex items-start print:flex-row print:items-center">
+            <!-- Photo -->
+            <div class="flex-shrink-0 w-[1.5cm] h-[2cm] rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-700">
+              <img 
+                src="/resume-profile-picture.png"
+                :alt="page.name" 
+                class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-300"
+              >
+            </div>
+            <!-- Contact info -->
+            <div class="flex-grow pl-4">
+              <h1 class="text-xl text-blue-600 dark:text-blue-400 mb-2">{{ page.name }}</h1>
+              <div class="text-xs space-y-1 text-gray-600 dark:text-gray-300">
+                <div v-for="(contact, type) in page.contact" :key="type" class="flex items-center gap-1">
+                  <a :href="getContactLink(type, contact)" class="flex items-center text-blue-600 dark:text-blue-400 hover:underline">
+                    <UIcon :name="getContactIcon(type)" class="w-4 h-4 mr-1" />
+                    <span class="truncate">{{ contact }}</span>
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="flex-grow pl-4">
-            <h1 class="text-2xl text-blue-600 mb-2">{{ page.header.name }}</h1>
-            <div class="text-sm text-gray-600">
-              <span v-for="(item, index) in page.header.contact" 
-                    :key="index" 
-                    class="inline-flex items-center gap-1 mr-4">
-                <a :href="item.url" 
-                   target="_blank" 
-                   class="flex items-center text-blue-600 hover:underline">
-                  <UIcon :name="item.icon" class="w-5 h-5 mr-1" />
-                  {{ item.text }}
-                </a>
+        </div>
+
+        <!-- Desktop Layout -->
+        <div class="hidden md:block">
+          <!-- Header Section -->
+          <div class="flex gap-6 mb-8">
+            <!-- Left Side (Photo + Contact) -->
+            <div class="w-[200px] flex-shrink-0">
+              <!-- Photo -->
+              <div class="flex items-center justify-center w-full max-w-[120px] aspect-square rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-700 mb-6">
+                <img 
+                  src="/resume-profile-picture.png"
+                  :alt="page.name" 
+                  class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-300"
+                >
+              </div>
+              
+              <!-- Contact Info -->
+              <div class="mb-6">
+                <h1 class="text-xl text-blue-600 dark:text-blue-400 mb-4">{{ page.name }}</h1>
+                <div class="space-y-2">
+                  <div v-for="(contact, type) in page.contact" :key="type">
+                    <a :href="getContactLink(type, contact)" class="flex items-center text-sm text-blue-600 dark:text-blue-400 hover:underline">
+                      <UIcon :name="getContactIcon(type)" class="w-4 h-4 mr-2" />
+                      <span class="truncate">{{ contact }}</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Skills -->
+              <div class="mb-6">
+                <h2 class="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-3">Skills</h2>
+                <div class="flex flex-wrap gap-2">
+                  <span 
+                    v-for="skill in page.skills" 
+                    :key="skill"
+                    class="px-2 py-1 text-xs bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full border border-blue-200 dark:border-blue-800"
+                  >
+                    {{ skill }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Education -->
+              <div class="mb-6">
+                <h2 class="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-3">Education</h2>
+                <div v-for="(edu, index) in page.education" :key="index" class="mb-4">
+                  <h3 class="text-base font-semibold text-blue-700 dark:text-blue-300">{{ edu.degree }}</h3>
+                  <p class="text-sm text-gray-800 dark:text-gray-200">{{ edu.institution }}</p>
+                  <span class="text-sm text-gray-600 dark:text-gray-400 italic">{{ edu.year }}, {{ edu.location }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Side (Summary + Experience) -->
+            <div class="flex-grow">
+              <!-- Summary -->
+              <div class="mb-8">
+                <h2 class="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-3">Summary</h2>
+                <p class="text-sm leading-relaxed text-gray-800 dark:text-gray-200">
+                  {{ page.summary }}
+                </p>
+              </div>
+
+              <!-- Experience Section -->
+              <div class="mb-8">
+                <h2 class="text-xl font-semibold text-blue-600 dark:text-blue-400 mb-6">Experience</h2>
+                <div v-for="(job, index) in page.experience" :key="index" class="mb-6">
+                  <div class="flex flex-col mb-2">
+                    <h3 class="text-base font-semibold text-blue-700 dark:text-blue-300">
+                      {{ job.title }}
+                      <template v-if="job.company">
+                        | {{ job.company }}
+                      </template>
+                    </h3>
+                    <span class="text-sm text-gray-600 dark:text-gray-400 italic">{{ job.duration }}, {{ job.location }}</span>
+                  </div>
+                  <ul class="list-disc pl-5 text-sm leading-relaxed text-gray-800 dark:text-gray-200 space-y-2">
+                    <li v-for="(detail, detailIndex) in job.details" :key="detailIndex">
+                      {{ detail }}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile Content -->
+        <div class="md:hidden print:block mt-6">
+          <!-- Summary -->
+          <div class="mb-6">
+            <h2 class="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-3">Summary</h2>
+            <p class="text-sm leading-relaxed text-gray-800 dark:text-gray-200">{{ page.summary }}</p>
+          </div>
+
+          <!-- Skills -->
+          <div class="mb-6">
+            <h2 class="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-3">Skills</h2>
+            <div class="flex flex-wrap gap-2">
+              <span 
+                v-for="skill in page.skills" 
+                :key="skill"
+                class="px-2 py-1 text-xs bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full border border-blue-200 dark:border-blue-800"
+              >
+                {{ skill }}
               </span>
             </div>
           </div>
-        </div>
 
-        <!-- Summary -->
-        <div class="mt-6">
-          <h2 class="text-xl font-semibold text-blue-600 my-4">Summary</h2>
-          <p class="text-base leading-7">{{ page.summary }}</p>
-        </div>
-
-        <!-- Experience -->
-        <div class="mt-6">
-          <h2 class="text-xl font-semibold text-blue-600 my-4">{{ page.experience.title }}</h2>
-          <div v-for="(job, index) in page.experience.items" :key="index" class="mb-4">
-            <div class="flex justify-between items-baseline mb-0">
-              <h3 class="text-lg font-semibold text-blue-700">
-                {{ job.title }}
-                <template v-if="job.company">
-                  | <a :href="`https://${job.company.toLowerCase()}.com`" 
-                       target="_blank" 
-                       class="text-blue-600 hover:underline">
-                    {{ job.company }}
-                  </a>
-                </template>
-              </h3>
-              <span class="text-sm text-gray-600 italic">{{ job.date }}, {{ job.location }}</span>
+          <!-- Education -->
+          <div class="mb-6">
+            <h2 class="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-3">Education</h2>
+            <div v-for="(edu, index) in page.education" :key="index" class="mb-4">
+              <h3 class="text-base font-semibold text-blue-700 dark:text-blue-300">{{ edu.degree }}</h3>
+              <p class="text-sm text-gray-800 dark:text-gray-200">{{ edu.institution }}</p>
+              <span class="text-sm text-gray-600 dark:text-gray-400 italic">{{ edu.year }}, {{ edu.location }}</span>
             </div>
-            <ul class="list-disc pl-5 text-base leading-7">
-              <li v-for="(detail, detailIndex) in job.details" 
-                  :key="detailIndex">
-                {{ detail }}
-              </li>
-            </ul>
-            
           </div>
-        </div>
 
-        <!-- Education section -->
-        <div class="mt-6">
-          <h2 class="text-xl font-semibold text-blue-600 my-4">{{ page.education.title }}</h2>
-          <div v-for="(edu, index) in page.education.items" :key="index" class="mb-4">
-            <div class="flex justify-between items-baseline mb-0">
-              <h3 class="text-lg font-semibold text-blue-700">
-                {{ edu.degree }}
-                <template v-if="edu.institution">
-                  | {{ edu.institution }}
-                </template>
-              </h3>
-              <span class="text-sm text-gray-600 italic">{{ edu.date }}, {{ edu.location }}</span>
+          <!-- Experience -->
+          <div class="mb-6">
+            <h2 class="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-4">Experience</h2>
+            <div v-for="(job, index) in page.experience" :key="index" class="mb-6">
+              <div class="flex flex-col mb-2">
+                <h3 class="text-base font-semibold text-blue-700 dark:text-blue-300">
+                  {{ job.title }}
+                  <template v-if="job.company">
+                    | {{ job.company }}
+                  </template>
+                </h3>
+                <span class="text-sm text-gray-600 dark:text-gray-400 italic">{{ job.duration }}, {{ job.location }}</span>
+              </div>
+              <ul class="list-disc pl-5 text-sm leading-relaxed text-gray-800 dark:text-gray-200 space-y-2">
+                <li v-for="(detail, detailIndex) in job.details" :key="detailIndex">
+                  {{ detail }}
+                </li>
+              </ul>
             </div>
-            <ul v-if="edu.details" class="list-disc pl-5 text-base leading-7">
-              <li v-for="(detail, detailIndex) in edu.details" 
-                  :key="detailIndex">
-                {{ detail }}
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Skills section -->
-        <div class="mt-6">
-          <h2 class="text-xl font-semibold text-blue-600 my-4">{{ page.skills.title }}</h2>
-          <div v-for="(category, index) in page.skills.items" :key="index" class="mb-4">
-            <h3 class="text-lg font-semibold text-blue-700">{{ category.category }}</h3>
-            <p class="text-base leading-7">{{ category.skills.join(', ') }}</p>
           </div>
         </div>
       </div>
     </div>
-  </UContainer>
+  </div>
 </template>
 
 <script setup lang="ts">
-const { data: page } = await useAsyncData('cv', () => queryContent('/cv').findOne())
-if (!page.value) {
-  throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
-}
+const { data: page } = await useFetch('/api/resume?section=all')
 
-useSeoMeta({
-  title: page.value.title,
-  ogTitle: page.value.title,
-  description: page.value.description,
-  ogDescription: page.value.description
-})
+if (!page.value) {
+  throw createError({ statusCode: 404, statusMessage: 'Resume data not found', fatal: true })
+}
 
 // Add print function
 const printResume = () => {
-  window.print();
+  const originalTitle = document.title
+  document.title = `${page.value.name} - Resume`
+  window.print()
+  document.title = originalTitle
+}
+
+// SEO
+useHead({
+  title: `${page.value.name} - Resume`,
+  meta: [
+    { name: 'description', content: page.value.summary }
+  ]
+})
+
+// Add helper functions for contact links and icons
+const getContactLink = (type: string, value: string) => {
+  switch (type) {
+    case 'email': return `mailto:${value}`
+    case 'phone': return `tel:${value}`
+    case 'linkedin': return value
+    default: return value
+  }
+}
+
+const getContactIcon = (type: string) => {
+  switch (type) {
+    case 'email': return 'i-heroicons-envelope'
+    case 'phone': return 'i-heroicons-phone'
+    case 'linkedin': return 'i-simple-icons-linkedin'
+    default: return 'i-heroicons-link'
+  }
+}
+
+const getContactDisplay = (type: string, value: string) => {
+  switch (type) {
+    case 'linkedin': return value.split('/').pop() // Gets the last part of the URL
+    default: return value
+  }
 }
 </script>
 
@@ -122,34 +237,75 @@ const printResume = () => {
 .a4-page {
   width: 210mm;
   min-height: 297mm;
-  padding: 20mm;
+  padding: 8mm;
   margin: 0 auto;
   background: white;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-/* Print-specific styles */
 @media print {
   @page {
     size: A4;
-    margin: 0;
+    margin: 1cm;
   }
 
   body {
-    margin: 0;
-    padding: 0;
+    visibility: hidden;
   }
 
-  .a4-page {
+  .max-w-\[95\%\] {
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  /* Make the CV content visible */
+  .bg-white {
+    visibility: visible;
+    position: absolute;
+    left: 0;
+    top: 0;
     width: 100%;
-    min-height: 100%;
-    padding: 20mm;
-    box-shadow: none;
   }
 
-  /* Hide non-resume elements when printing */
-  header, footer, nav, .print\:hidden {
+  .print\:block {
+    display: block !important;
+  }
+
+  .print\:hidden {
     display: none !important;
+  }
+
+  /* Ensure proper text contrast in print */
+  .dark\:text-gray-200,
+  .dark\:text-gray-300,
+  .dark\:text-gray-400 {
+    color: #1f2937 !important;
+  }
+
+  /* Adjust margins and spacing for print */
+  .p-6 {
+    padding: 0.5cm !important;
+  }
+
+  .mb-8 {
+    margin-bottom: 0.5cm !important;
+  }
+
+  .mb-4 {
+    margin-bottom: 0.25cm !important;
+  }
+
+  /* Ensure proper page breaks */
+  .page-break-before {
+    page-break-before: always;
+  }
+
+  .page-break-after {
+    page-break-after: always;
+  }
+
+  /* Prevent breaks inside important sections */
+  h2, h3 {
+    break-after: avoid;
   }
 }
 </style>

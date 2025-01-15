@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-6xl mx-auto px-6">
+  <div class="max-w-7xl mx-auto px-6 mb-8">
     <div class="flex justify-between items-start md:flex-row flex-col gap-8">
       <div class="flex-1">
         <Spotify />
@@ -15,7 +15,7 @@
               aria-label="LinkedIn Profile"
               class="text-primary hover:opacity-60 transition-opacity duration-300"
             >
-              <UIcon name="i-mdi-linkedin" />
+              <UIcon name="i-mdi-linkedin" class="w-4 h-4" />
             </a>
 
             <a
@@ -25,7 +25,7 @@
               aria-label="GitHub Profile"
               class="text-primary hover:opacity-60 transition-opacity duration-300"
             >
-              <UIcon name="i-mdi-github" />
+              <UIcon name="i-mdi-github" class="w-4 h-4" />
             </a>
 
             <a
@@ -35,7 +35,7 @@
               aria-label="Send Email"
               class="text-primary hover:opacity-60 transition-opacity duration-300"
             >
-              <UIcon name="i-mdi-email" />
+              <UIcon name="i-mdi-email" class="w-4 h-4" />
             </a>
           </div>
         </div>

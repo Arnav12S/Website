@@ -1,26 +1,36 @@
 import { serverQueryContent } from '#content/server'
 
 export default eventHandler(async (event) => {
-  // Query all content
-  return serverQueryContent(event)
-    .where({ 
-      _type: 'markdown',
-      navigation: { $ne: false },
-      // Exclude draft content if needed
-      draft: { $ne: true }
-    })
-    // Select only the fields we need for search
-    .only([
-      'title',
-      'description',
-      '_path',
-      '_type',
-      'navigation',
-      // Add any other fields you want to search through
-      'badge',
-      'date'
-    ])
-    // Sort by date if available, otherwise by title
-    .sort({ date: -1, title: 1 })
-    .find()
+  const [projects, blogs] = await Promise.all([
+    // Get project overviews
+    serverQueryContent(event, 'projects')
+      .where({ 
+        _extension: 'md',
+        _path: /\/overview$/
+      })
+      .find(),
+    
+    // Get blog posts
+    serverQueryContent(event, 'blog')
+      .where({ 
+        _extension: 'md'
+      })
+      .find()
+  ])
+
+  // Transform project data to include full content but only expose overview paths
+  const searchableProjects = projects.map(project => ({
+    ...project,
+    searchContent: project.body?.text, // Include full text for search
+    _path: project._path.replace('/overview', ''), // Clean up path
+    _type: 'project'
+  }))
+
+  const searchableBlogs = blogs.map(blog => ({
+    ...blog,
+    searchContent: blog.body?.text,
+    _type: 'blog'
+  }))
+
+  return [...searchableProjects, ...searchableBlogs]
 })

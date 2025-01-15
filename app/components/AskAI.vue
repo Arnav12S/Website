@@ -149,12 +149,16 @@ const initialMessage = () => {
 // Add new function for API call
 const queryAI = async (userInput) => {
   try {
-    const response = await fetch(`https://ai.arnav.blog/query?q=${encodeURIComponent(userInput)}`, {
+    const response = await fetch(`https://ai.arnav.blog/?query=${encodeURIComponent(userInput)}`, {
       method: 'GET',
+      headers: {
+        'Accept': '*/*',
+        'Origin': window.location.origin,
+      }
     })
     const data = await response.json()
     // Handle the nested response structure and format with line breaks
-    const formattedResponse = data?.response?.response?.replace(/\n/g, '<br>') || 'Sorry, I could not generate a response.'
+    const formattedResponse = data?.response || 'Sorry, I could not generate a response.'
     return formattedResponse
   } catch (error) {
     console.error('Error querying AI:', error)

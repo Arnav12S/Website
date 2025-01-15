@@ -143,7 +143,9 @@ const performSearch = () => {
   } else {
     const query = searchQuery.value.toLowerCase()
     filteredItems.value = allItems.value.filter(item => 
-      item.text.toLowerCase().includes(query)
+      item.text.toLowerCase().includes(query) ||
+      item.searchContent?.toLowerCase().includes(query) ||
+      item.description?.toLowerCase().includes(query)
     )
   }
   currentIndex.value = -1

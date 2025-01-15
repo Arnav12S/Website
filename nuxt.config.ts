@@ -23,8 +23,9 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    '/api/search.json': { prerender: true },
-    '/docs': { redirect: '/docs/getting-started', prerender: false }
+    '/projects': { index: true },
+    '/projects/**': { middleware: ['project-access'] },
+    '/api/search.json': { prerender: true }
   },
 
   future: {
@@ -35,16 +36,16 @@ export default defineNuxtConfig({
 
   nitro: {
     prerender: {
-      routes: [
-        '/',
-        '/docs'
+      routes: ['/',
+        '/projects',
       ],
       crawlLinks: true,
       ignore: [
         '/login',
         '/signup',
         '/pricing',
-        '/contact'
+        '/contact',
+        '/projects/**'
       ]
     }
   },

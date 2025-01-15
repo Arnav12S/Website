@@ -1,5 +1,6 @@
 export const resumeData = {
   "name": "Arnav Sudhansh Itikyala",
+  "photo": "/resume-profile-picture.png",
   "contact": {
     "email": "arnav@sfr.fr",
     "phone": "+33749594204",
@@ -65,7 +66,7 @@ export const resumeData = {
     },
     {
       "title": "CEO/Co-founder",
-      "startup": "Plantastic Private Limited",
+      "company": "Plantastic Private Limited",
       "duration": "December 2012 - September 2017",
       "location": "India",
       "details": [
@@ -119,6 +120,5 @@ export const resumeData = {
       "location": "Bordeaux, France",
       "year": 2021
     }
-  ],
-  "photo": "/resume-profile-picture.png"
+  ]
 };

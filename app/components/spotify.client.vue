@@ -10,12 +10,11 @@
               :alt="spotify.album"
               class="w-12 h-12 object-cover rounded"
             />
-            <span class="text-[10px] text-neutral">Control for fun</span>
           </div>
 
           <!-- Song Details and Controls -->
-          <div class="flex flex-col">
-            <div class="flex items-center gap-1.5 mb-1">
+          <div class="flex flex-col min-w-0">
+            <div class="flex items-center gap-1.5 mb-1 whitespace-nowrap">
               <UIcon
                 name="i-simple-icons-spotify"
                 class="w-3 h-3 text-emerald-600"
@@ -63,12 +62,12 @@
           </div>
         </div>
 
-        <div v-else class="flex items-center gap-2">
+        <div v-else class="flex items-center gap-3">
           <UIcon
             name="i-simple-icons-spotify"
-            class="w-5 h-5 text-neutral"
+            class="w-6 h-6 text-neutral"
           />
-          <div class="flex flex-col">
+          <div class="flex flex-col min-w-0">
             <h5 class="text-sm truncate">
               <a 
                 href="https://open.spotify.com/user/arnav.sudhansh" 
@@ -93,81 +92,53 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { getRelativeTime } from '~/utils/date'
 
 const spotify = ref(null)
-let ws = null
-const MAX_RECONNECT_DELAY = 5000
-let reconnectTimeout = null
+let pollInterval = null
+const POLL_INTERVAL = 5000 // Poll every 5 seconds
 
-const connectWebSocket = () => {
-  // Clear any existing connection first
-  if (ws) {
-    ws.close()
-    ws = null
-  }
-
-  if (reconnectTimeout) {
-    clearTimeout(reconnectTimeout)
-    reconnectTimeout = null
-  }
-
-  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-  const wsUrl = `${protocol}//${window.location.host}/api/spotify`
-
-  ws = new WebSocket(wsUrl)
-
-  ws.onopen = () => {
-    console.log('WebSocket connection established')
-  }
-
-  ws.onmessage = (event) => {
-    try {
-      const message = JSON.parse(event.data)
-      console.log('Received message:', message)
-      if (message.type === 'spotify_update') {
-        spotify.value = message.data
-        console.log('Spotify state updated:', message.data)
-      }
-    } catch (error) {
-      console.error('WebSocket message parsing error:', error)
-    }
-  }
-
-  ws.onclose = (event) => {
-    console.warn(`WebSocket closed (Code: ${event.code}). Attempting to reconnect...`)
-    clearTimeout(reconnectTimeout)
-    reconnectTimeout = setTimeout(connectWebSocket, MAX_RECONNECT_DELAY)
-  }
-
-  ws.onerror = (error) => {
-    console.error('WebSocket error:', error)
-    ws.close()
+const fetchSpotifyState = async () => {
+  try {
+    const response = await fetch('/api/spotify-state')
+    const data = await response.json()
+    spotify.value = data
+  } catch (error) {
+    console.error('Error fetching Spotify state:', error)
   }
 }
 
 const controlPlayback = async (action) => {
-  if (ws?.readyState === WebSocket.OPEN) {
-    console.log(`Sending playback control action: ${action}`)
-    ws.send(JSON.stringify({
-      type: 'playback_control',
-      action
-    }))
-  } else {
-    console.warn('WebSocket is not open. Cannot send playback control action.')
+  try {
+    await fetch('/api/spotify-control', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ action })
+    })
+    // Fetch immediately after control action
+    await fetchSpotifyState()
+  } catch (error) {
+    console.error('Error controlling playback:', error)
   }
 }
 
-const togglePlayPause = () => {
-  controlPlayback(spotify.value?.isPlaying ? 'pause' : 'play')
+const togglePlayPause = async () => {
+  try {
+    const action = spotify.value?.isPlaying ? 'pause' : 'play'
+    console.log('Toggling playback:', action)
+    await controlPlayback(action)
+  } catch (error) {
+    console.error('Error in togglePlayPause:', error)
+  }
 }
 
 onMounted(() => {
-  connectWebSocket()
+  fetchSpotifyState() // Initial fetch
+  pollInterval = setInterval(fetchSpotifyState, POLL_INTERVAL)
 })
 
 onUnmounted(() => {
-  if (ws) {
-    clearTimeout(reconnectTimeout)
-    ws.close()
-    console.log('WebSocket connection closed by client')
+  if (pollInterval) {
+    clearInterval(pollInterval)
   }
 })
 </script>
