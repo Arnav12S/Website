@@ -18,6 +18,10 @@ export default defineNuxtConfig({
     enabled: true
   },
 
+  uiPro: {
+    content: true
+  },
+
   colorMode: {
     disableTransition: true
   },

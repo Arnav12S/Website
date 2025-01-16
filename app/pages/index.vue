@@ -11,6 +11,22 @@ useSeoMeta({
   description: page.value.description,
   ogDescription: page.value.description
 })
+
+const getInitials = (name) => name.split(' ').map(n => n[0]).join('').toUpperCase()
+
+const getRandomColor = (name) => {
+  const colors = [
+    'bg-blue-500', 'bg-green-500', 'bg-yellow-500', 
+    'bg-purple-500', 'bg-pink-500', 'bg-indigo-500'
+  ]
+  return colors[name.length % colors.length]
+}
+
+const items = page.value.testimonials.items.map((testimonial) => ({
+  label: testimonial.author.name + ' | ' + testimonial.author.relation,
+  content: testimonial,
+  defaultOpen: false,
+}))
 </script>
 
 <template>
@@ -43,6 +59,52 @@ useSeoMeta({
               <p class="text-neutral text-sm sm:text-base">{{ item.description }}</p>
             </div>
           </NuxtLink>
+
+          <!-- Testimonials section -->
+          <div 
+            class="mt-12 group" 
+            data-aos="fade-up"
+          >
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 p-4 -mx-4 transition-all duration-200 hover:bg-neutral-50 dark:hover:bg-neutral-900 hover:translate-y-[-2px] rounded-lg">
+              <h3 class="text-lg font-medium text-primary">{{ page.testimonials.title }}</h3>
+              <p class="text-neutral text-sm sm:text-base">{{ page.testimonials.description }}</p>
+            </div>
+            
+            <div class="hidden group-hover:block">
+              <UAccordion :items="items" class="space-y-2">
+                <template #label="{ item }">
+                  <div class="flex items-center justify-between w-full">
+                    <div class="flex items-center gap-2">
+                      <div 
+                        :class="[
+                          'w-8 h-8 rounded-full flex items-center justify-center text-white font-medium',
+                          item.avatar.class
+                        ]"
+                      >
+                        {{ item.avatar.text }}
+                      </div>
+                      <span class="text-primary">{{ item.label.left }}</span>
+                    </div>
+                    <span class="text-neutral text-sm">{{ item.label.right }}</span>
+                  </div>
+                </template>
+                
+                <template #item="{ item }">
+                  <div 
+                    class="block p-4 -mx-4 transition-all duration-200 hover:bg-neutral-50 dark:hover:bg-neutral-900 hover:translate-y-[-2px] rounded-lg"
+                  >
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1">
+                      <p class="text-neutral text-sm sm:text-base">{{ item.content.author.description }}</p>
+                    </div>
+                    
+                    <div class="mt-4">
+                      <p class="text-neutral text-sm sm:text-base italic">{{ item.content.quote }}</p>
+                    </div>
+                  </div>
+                </template>
+              </UAccordion>
+            </div>
+          </div>
         </div>
 
         <div class="flex justify-center mt-24 mb-16">

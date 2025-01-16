@@ -1,213 +1,245 @@
 <template>
-  <div class="bg-muted dark:bg-muted-dark min-h-screen">
-    <div class="max-w-[95%] lg:max-w-[85%] xl:max-w-[75%] mx-auto p-6 box-border">
-      <!-- Mobile Layout -->
-      <div class="md:hidden">
-        <!-- Mobile TOC -->
-        <div class="mb-8">
-          <button 
-            @click="showTOC = !showTOC"
-            class="flex items-center justify-between w-full p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm"
+  <NuxtLayout>
+    <div class="bg-muted dark:bg-muted-dark min-h-screen">
+      <div class="max-w-7xl mx-auto py-6 px-6 sm:px-8 lg:px-10">
+        <!-- Add Download Button -->
+        <div class="flex justify-end mb-4">
+          <a
+            href="/CV_Arnav.pdf"
+            target="_blank"
+            class="inline-flex items-center gap-2 px-3 py-2 text-sm text-primary hover:text-primary-dark transition-colors duration-200"
+            title="Download Resume"
           >
-            <span class="text-primary dark:text-primary-dark font-medium">Table of Contents</span>
-            <UIcon 
-              :name="showTOC ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'" 
-              class="w-5 h-5"
-            />
-          </button>
-          
-          <!-- TOC Content -->
-          <div v-if="showTOC" class="mt-4 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
-            <nav class="space-y-3">
-              <a 
-                v-for="section in sections" 
-                :key="section.id"
-                :href="`#${section.id}`"
-                class="block text-sm text-foreground dark:text-foreground-dark hover:text-primary dark:hover:text-primary-dark"
-                @click="showTOC = false"
-              >
-                {{ section.title }}
-              </a>
-            </nav>
-          </div>
+            <UIcon name="i-lucide-download" class="w-5 h-5" />
+            <span class="hidden sm:inline">Download PDF</span>
+          </a>
         </div>
-
-        <!-- Header Section -->
-        <div class="mb-8">
-          <div class="flex items-center gap-4 mb-6">
-            <div class="w-24 h-24 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-700 flex-shrink-0">
-              <img :src="resumeData.header.image" :alt="resumeData.header.name" 
-                   class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-300">
-            </div>
-            <div>
-              <h1 class="text-xl text-primary dark:text-primary-dark mb-2">{{ resumeData.header.name }}</h1>
-              <div class="space-y-1">
-                <div v-for="item in resumeData.header.contact" :key="item.text">
-                  <a :href="item.url" class="flex items-center text-sm text-primary dark:text-primary-dark hover:underline">
-                    <UIcon :name="item.icon" class="w-4 h-4 mr-2" />
-                    <span class="truncate">{{ item.text }}</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Summary Section -->
-          <div id="summary" class="mb-8">
-            <h2 class="text-lg font-semibold text-primary dark:text-primary-dark mb-3">Summary</h2>
-            <p class="text-sm leading-relaxed text-foreground dark:text-foreground-dark">{{ resumeData.summary }}</p>
-          </div>
-
-          <!-- Experience Section -->
-          <div id="experience" class="mb-8">
-            <h2 class="text-lg font-semibold text-primary dark:text-primary-dark mb-4">Experience</h2>
-            <div 
-              v-for="exp in resumeData.experience" 
-              :key="exp.title" 
-              :id="getExperienceId(exp)" 
-              class="mb-6 scroll-mt-20"
+        <!-- Mobile Layout -->
+        <div class="md:hidden">
+          <!-- Mobile TOC -->
+          <div class="mb-8">
+            <button 
+              @click="showTOC = !showTOC"
+              class="flex items-center justify-between w-full p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm"
             >
-              <div class="flex flex-col mb-2">
-                <div class="flex items-start justify-between gap-4">
-                  <div>
-                    <h3 class="text-base font-semibold text-primary-foreground dark:text-primary-foreground-dark">{{ exp.title }}</h3>
-                    <span class="text-sm text-muted-foreground dark:text-muted-foreground-dark italic">{{ exp.duration }}, {{ exp.location }}</span>
-                  </div>
-                  <div v-if="exp.company_logo" class="flex-shrink-0">
-                    <img :src="exp.company_logo" :alt="exp.company" 
-                         class="w-20 h-20 object-contain grayscale hover:grayscale-0 transition-all duration-300">
+              <span class="text-primary dark:text-primary-dark font-medium">Table of Contents</span>
+              <UIcon 
+                :name="showTOC ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'" 
+                class="w-5 h-5"
+              />
+            </button>
+            
+            <!-- TOC Content -->
+            <div v-if="showTOC" class="mt-4 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+              <nav class="space-y-3">
+                <a 
+                  v-for="section in sections" 
+                  :key="section.id"
+                  :href="`#${section.id}`"
+                  class="block text-sm text-foreground dark:text-foreground-dark hover:text-primary dark:hover:text-primary-dark"
+                  @click="showTOC = false"
+                >
+                  {{ section.title }}
+                </a>
+              </nav>
+            </div>
+          </div>
+
+          <!-- Header Section -->
+          <div class="mb-8">
+            <div class="flex items-center gap-4 mb-6">
+              <div class="w-24 h-24 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-700 flex-shrink-0">
+                <img :src="resumeData.header.image" :alt="resumeData.header.name" 
+                    class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-300">
+              </div>
+              <div>
+                <h1 class="text-xl text-primary dark:text-primary-dark mb-2">{{ resumeData.header.name }}</h1>
+                <div class="space-y-1">
+                  <div v-for="item in resumeData.header.contact" :key="item.text">
+                    <a :href="item.url" class="flex items-center text-sm text-primary dark:text-primary-dark hover:underline">
+                      <UIcon :name="item.icon" class="w-4 h-4 mr-2" />
+                      <span class="truncate">{{ item.text }}</span>
+                    </a>
                   </div>
                 </div>
               </div>
-              <ul class="list-disc pl-5 text-sm leading-relaxed text-foreground dark:text-foreground-dark space-y-2">
-                <li v-for="detail in exp.details" :key="detail">{{ detail }}</li>
-              </ul>
-            </div>
-          </div>
-
-          <!-- Education Section -->
-          <div id="education" class="mb-8">
-            <h2 class="text-lg font-semibold text-primary dark:text-primary-dark mb-3">Education</h2>
-            <div 
-              v-for="edu in resumeData.education" 
-              :key="edu.institution" 
-              :id="getEducationId(edu)" 
-              class="mb-4 scroll-mt-20"
-            >
-              <h3 class="text-base font-semibold text-primary-foreground dark:text-primary-foreground-dark">{{ edu.degree }}</h3>
-              <p class="text-sm text-foreground dark:text-foreground-dark">{{ edu.institution }}</p>
-              <span class="text-sm text-muted-foreground dark:text-muted-foreground-dark italic">{{ edu.year }}, {{ edu.location }}</span>
-            </div>
-          </div>
-
-          <!-- Skills Section -->
-          <div id="skills" class="mb-8">
-            <h2 class="text-lg font-semibold text-primary dark:text-primary-dark mb-3">Skills</h2>
-            <ul class="list-none grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              <li v-for="skill in resumeData.skills" :key="skill" class="text-sm text-foreground dark:text-foreground-dark">
-                • {{ skill }}
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <!-- Desktop Layout -->
-      <div class="hidden md:block">
-        <div class="flex gap-6">
-          <!-- Sidebar -->
-          <div class="w-[200px] flex-shrink-0">
-            <div class="flex items-center justify-center w-full max-w-[120px] aspect-square rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-700 mb-6">
-              <img :src="resumeData.header.image" :alt="resumeData.header.name" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-300">
-            </div>
-            <div class="mb-6">
-              <h1 class="text-xl text-primary dark:text-primary-dark mb-4">{{ resumeData.header.name }}</h1>
-              <div class="space-y-2">
-                <div v-for="item in resumeData.header.contact" :key="item.text">
-                  <a :href="item.url" class="flex items-center text-sm text-primary dark:text-primary-dark hover:underline">
-                    <UIcon :name="item.icon" class="w-4 h-4 mr-2" />
-                    <span class="truncate">{{ item.text }}</span>
-                  </a>
-                </div>
-              </div>
             </div>
 
-            <!-- Skills Section -->
-            <div class="mb-6">
-              <h2 class="text-lg font-semibold text-primary dark:text-primary-dark mb-3">Skills</h2>
-              <div class="flex flex-wrap gap-2">
-                <span v-for="skill in resumeData.skills" :key="skill" 
-                      class="px-2 py-1 text-xs bg-primary/10 dark:bg-primary-dark/10 text-primary-foreground dark:text-primary-foreground-dark rounded-full border border-primary/20 dark:border-primary-dark/20">
-                  {{ skill }}
-                </span>
-              </div>
-            </div>
-
-            <!-- Education Section -->
-            <div class="mb-6">
-              <h2 class="text-lg font-semibold text-primary dark:text-primary-dark mb-3">Education</h2>
-              <div v-for="edu in resumeData.education" :key="edu.institution" class="mb-4">
-                <h3 class="text-base font-semibold text-primary-foreground dark:text-primary-foreground-dark">{{ edu.degree }}</h3>
-                <p class="text-sm text-foreground dark:text-foreground-dark">{{ edu.institution }}</p>
-                <span class="text-sm text-muted-foreground dark:text-muted-foreground-dark italic">{{ edu.year }}, {{ edu.location }}</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Main Content -->
-          <div class="flex-grow">
-            <!-- Summary -->
-            <div class="mb-8">
+            <!-- Summary Section -->
+            <div id="summary" class="mb-8">
               <h2 class="text-lg font-semibold text-primary dark:text-primary-dark mb-3">Summary</h2>
               <p class="text-sm leading-relaxed text-foreground dark:text-foreground-dark">{{ resumeData.summary }}</p>
             </div>
 
-            <!-- Experience -->
-            <div class="mb-8">
-              <h2 class="text-xl font-semibold text-primary dark:text-primary-dark mb-6">Experience</h2>
-              <div v-for="exp in resumeData.experience" :key="exp.title" class="mb-6">
+            <!-- Experience Section -->
+            <div id="experience" class="mb-8">
+              <h2 class="text-lg font-semibold text-primary dark:text-primary-dark mb-4">Experience</h2>
+              <div 
+                v-for="exp in resumeData.experience" 
+                :key="exp.title" 
+                :id="getExperienceId(exp)" 
+                class="mb-6 scroll-mt-20"
+              >
                 <div class="flex flex-col mb-2">
-                  <div class="flex items-center justify-between gap-4">
-                    <h3 class="text-base font-semibold text-primary-foreground dark:text-primary-foreground-dark">{{ exp.title }}</h3>
-                    <div class="flex items-center gap-4">
-                      <div v-if="exp.companies" class="flex gap-2">
-                        <div v-for="company in exp.companies" :key="company.name" 
-                             class="relative group cursor-pointer">
-                          <div class="w-[120px] h-[48px] bg-background dark:bg-background-dark rounded-xl p-1 ring-1 ring-border dark:ring-border-dark"
-                               :class="{ 'w-[48px] h-[48px] p-0': company.name === 'Remote Ambition' || company.name === 'Alluring Accessories' }">
-                            <img :src="company.logo" :alt="company.name" 
-                                 class="w-full h-full object-contain grayscale hover:grayscale-0 transition-all duration-300"
-                                 @click="openUrl(company.url)">
-                          </div>
-                          <span class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground px-2 py-1 rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
-                            {{ company.name }}
-                          </span>
-                        </div>
-                      </div>
-                      <div v-else-if="exp.company_logo" class="relative group cursor-pointer">
-                        <div class="w-[120px] h-[48px] bg-background dark:bg-background-dark rounded-xl p-1 ring-1 ring-border dark:ring-border-dark">
+                  <div class="flex items-start justify-between gap-4">
+                    <div>
+                      <h3 class="text-base font-semibold text-primary-foreground dark:text-primary-foreground-dark">{{ exp.title }}</h3>
+                      <span class="text-sm text-muted-foreground dark:text-muted-foreground-dark italic">{{ exp.duration }}, {{ exp.location }}</span>
+                    </div>
+                    <div v-if="exp.company_logo" class="flex-shrink-0">
+                      <div class="relative group">
+                        <div class="w-20 h-20 bg-white dark:bg-white rounded-xl p-1 ring-1 ring-border dark:ring-border-dark"
+                            :class="{ 'w-20 h-8 p-0': exp.company === 'Remote Ambition' || exp.company === 'Alluring Accessories' }">
                           <img :src="exp.company_logo" :alt="exp.company" 
-                               class="w-full h-full object-contain grayscale hover:grayscale-0 transition-all duration-300"
-                               @click="openUrl(exp.url)">
+                              class="w-full h-full object-contain grayscale hover:grayscale-0 transition-all duration-300">
                         </div>
-                        <span class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground px-2 py-1 rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
-                          {{ exp.company }}
-                        </span>
+                        <div class="absolute -top-12 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                          <div class="bg-gray-900 text-white px-3 py-1.5 rounded-lg text-sm whitespace-nowrap shadow-lg">
+                            {{ exp.company }}
+                            <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-2 h-2 bg-gray-900"></div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <span class="text-sm text-muted-foreground dark:text-muted-foreground-dark italic">{{ exp.duration }}, {{ exp.location }}</span>
                 </div>
                 <ul class="list-disc pl-5 text-sm leading-relaxed text-foreground dark:text-foreground-dark space-y-2">
                   <li v-for="detail in exp.details" :key="detail">{{ detail }}</li>
                 </ul>
               </div>
             </div>
+
+            <!-- Education Section -->
+            <div id="education" class="mb-8">
+              <h2 class="text-lg font-semibold text-primary dark:text-primary-dark mb-3">Education</h2>
+              <div 
+                v-for="edu in resumeData.education" 
+                :key="edu.institution" 
+                :id="getEducationId(edu)" 
+                class="mb-4 scroll-mt-20"
+              >
+                <h3 class="text-base font-semibold text-primary-foreground dark:text-primary-foreground-dark">{{ edu.degree }}</h3>
+                <p class="text-sm text-foreground dark:text-foreground-dark">{{ edu.institution }}</p>
+                <span class="text-sm text-muted-foreground dark:text-muted-foreground-dark italic">{{ edu.year }}, {{ edu.location }}</span>
+              </div>
+            </div>
+
+            <!-- Skills Section -->
+            <div id="skills" class="mb-8">
+              <h2 class="text-lg font-semibold text-primary dark:text-primary-dark mb-3">Skills</h2>
+              <ul class="list-none grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <li v-for="skill in resumeData.skills" :key="skill" class="text-sm text-foreground dark:text-foreground-dark">
+                  • {{ skill }}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Desktop Layout -->
+        <div class="hidden md:block">
+          <div class="flex gap-6">
+            <!-- Sidebar -->
+            <div class="w-[200px] flex-shrink-0">
+              <div class="flex items-center justify-center w-full max-w-[120px] aspect-square rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-700 mb-6">
+                <img :src="resumeData.header.image" :alt="resumeData.header.name" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-300">
+              </div>
+              <div class="mb-6">
+                <h1 class="text-xl text-primary dark:text-primary-dark mb-4">{{ resumeData.header.name }}</h1>
+                <div class="space-y-2">
+                  <div v-for="item in resumeData.header.contact" :key="item.text">
+                    <a :href="item.url" class="flex items-center text-sm text-primary dark:text-primary-dark hover:underline">
+                      <UIcon :name="item.icon" class="w-4 h-4 mr-2" />
+                      <span class="truncate">{{ item.text }}</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Skills Section -->
+              <div class="mb-6">
+                <h2 class="text-lg font-semibold text-primary dark:text-primary-dark mb-3">Skills</h2>
+                <div class="flex flex-wrap gap-2">
+                  <span v-for="skill in resumeData.skills" :key="skill" 
+                        class="px-2 py-1 text-xs bg-primary/10 dark:bg-primary-dark/10 text-primary-foreground dark:text-primary-foreground-dark rounded-full border border-primary/20 dark:border-primary-dark/20">
+                    {{ skill }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Education Section -->
+              <div class="mb-6">
+                <h2 class="text-lg font-semibold text-primary dark:text-primary-dark mb-3">Education</h2>
+                <div v-for="edu in resumeData.education" :key="edu.institution" class="mb-4">
+                  <h3 class="text-base font-semibold text-primary-foreground dark:text-primary-foreground-dark">{{ edu.degree }}</h3>
+                  <p class="text-sm text-foreground dark:text-foreground-dark">{{ edu.institution }}</p>
+                  <span class="text-sm text-muted-foreground dark:text-muted-foreground-dark italic">{{ edu.year }}, {{ edu.location }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="flex-grow">
+              <!-- Summary -->
+              <div class="mb-8">
+                <h2 class="text-lg font-semibold text-primary dark:text-primary-dark mb-3">Summary</h2>
+                <p class="text-sm leading-relaxed text-foreground dark:text-foreground-dark">{{ resumeData.summary }}</p>
+              </div>
+
+              <!-- Experience -->
+              <div class="mb-8">
+                <h2 class="text-xl font-semibold text-primary dark:text-primary-dark mb-6">Experience</h2>
+                <div v-for="exp in resumeData.experience" :key="exp.title" class="mb-6">
+                  <div class="flex flex-col mb-2">
+                    <div class="flex items-center justify-between gap-4">
+                      <h3 class="text-base font-semibold text-primary-foreground dark:text-primary-foreground-dark">{{ exp.title }}</h3>
+                      <div class="flex items-center gap-4">
+                        <div v-if="exp.companies" class="flex gap-2">
+                          <div v-for="company in exp.companies" :key="company.name" 
+                              class="relative group cursor-pointer">
+                            <div class="w-[120px] h-[48px] bg-white dark:bg-white rounded-xl p-1 ring-1 ring-border dark:ring-border-dark"
+                                :class="{ 'w-[48px] h-[48px] p-0': company.name === 'Remote Ambition' || company.name === 'Alluring Accessories' }">
+                              <img :src="company.logo" :alt="company.name" 
+                                  class="w-full h-full object-contain grayscale hover:grayscale-0 transition-all duration-300"
+                                  @click="openUrl(company.url)">
+                            </div>
+                            <div class="absolute -top-12 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                              <div class="bg-gray-900 text-white px-3 py-1.5 rounded-lg text-sm whitespace-nowrap shadow-lg">
+                                {{ company.name }}
+                                <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-2 h-2 bg-gray-900"></div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div v-else-if="exp.company_logo" class="relative group cursor-pointer">
+                          <div class="w-[120px] h-[48px] bg-white dark:bg-white rounded-xl p-1 ring-1 ring-border dark:ring-border-dark"
+                              :class="{ 'w-[48px] h-[48px] p-0': exp.company === 'Remote Ambition' || exp.company === 'Alluring Accessories' }">
+                            <img :src="exp.company_logo" :alt="exp.company" 
+                                class="w-full h-full object-contain grayscale hover:grayscale-0 transition-all duration-300"
+                                @click="openUrl(exp.url)">
+                          </div>
+                          <div class="absolute -top-12 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                            <div class="bg-gray-900 text-white px-3 py-1.5 rounded-lg text-sm whitespace-nowrap shadow-lg">
+                              {{ exp.company }}
+                              <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-2 h-2 bg-gray-900"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="text-sm text-muted-foreground dark:text-muted-foreground-dark italic">{{ exp.duration }}, {{ exp.location }}</span>
+                  </div>
+                  <ul class="list-disc pl-5 text-sm leading-relaxed text-foreground dark:text-foreground-dark space-y-2">
+                    <li v-for="detail in exp.details" :key="detail">{{ detail }}</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </NuxtLayout>
 </template>
 
 <script setup>

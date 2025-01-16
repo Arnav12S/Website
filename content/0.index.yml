@@ -26,3 +26,47 @@ sections:
       - title: Contact
         description: Let's chat about how I can help you solve your next big challenge.
         to: /contact
+testimonials:
+  title: What People Are Saying
+  description: Hear from my colleagues and clients about working with me.
+  items:
+    - quote: "Arnav is a trend-setter, a go-getter and resilient in all aspects of his life. I have had the opportunity to work and study with him and I am always amazed at his reflection before attacking any task. He is extremely analytical and does not hesitate to employ his critical thinking skills and entrepreneurial mindset to get the job done. When he has understood what needs to be done, he engages in the activity efficiently, effectively and in a timely manner with the technical know-how and data-centricity to get the job done. For instance, I have watched him build a website from scratch in a matter of days with an astonishing end result and an extremely happy and satisfied customer and dare I add that this was only one of the tasks that I've seen him accomplish in a flawless manner over the years. Further, it goes without saying that he is a team player and one of his best qualities is his ability to actively listen and comprehend his ever-changing environment. He takes the time to help others even in his busiest of moments and I am often inspired by this rare core value. Professionally, I have watched him expand businesses to other countries and promote growth but I have also watched him expand professional and personal networks with his personality that perfectly balances the two. He is the person that not only motivates and inspires you to climb up the ladder but also holds your hand while doing so. This is the mindset of a leader and I can attest to the fact that Arnav embodies this. I believe that he is like a rare diamond that becomes more beautiful and resilient under pressure. I personally and professionally recommend Arnav Sudhansh Itikyala because there is no doubt in my mind that he will go very far in life and it is my greatest hope that everyone who has come into his path will have the benefit of experiencing the man that he is and the guidance and leadership that he not only brings to the table professionally but offers to anyone in need."
+      author:
+        name: "Bianca ARTHUR"
+        relation: "Colleague"
+        description: "Deployment @ Wakeo | Dataiku & ReportLinker Alum | MSc in International Business Management | Tech Enthusiast | Educator | Blogger"
+        to: "https://www.linkedin.com/in/bianca-arthur"
+        avatar:
+          src: "https://i.pravatar.cc/120?img=1"
+    - quote: "Arnav is a great Manager & Colleague to work with. With his patient mindset & impeccable problem-solving skills, he becomes an important asset for any organisation. Working with him is always fun!"
+      author:
+        name: "Kamal Limani"
+        relation: "Team Member, Led by Arnav"
+        description: "Product at Whatfix | Operations | Strategy"
+        to: "https://www.linkedin.com/in/kamal-limani-410738b6"
+        avatar:
+          src: "https://i.pravatar.cc/120?img=2"
+    - quote: "Arnav is one of the best managers I have worked with. He is an efficient manager with exceptional people management and communications skills. He was my mentor and go-to person for anything like taking a business call, advice or any problem. His leadership skills are quite admirable and make his team members feel psychologically secure in the team. He is quite calm and composed during critical situations and is quite thorough with the solutions. He gets involved with the key aspects and at the same time gives enough slack to grow and perform to the best of one's abilities."
+      author:
+        name: "Shivani Mhetre"
+        relation: "Team Member, Led by Arnav"
+        description: "Management Consultant @ Accenture Strategy"
+        to: "https://www.linkedin.com/in/shivani-mhetre"
+        avatar:
+          src: "https://i.pravatar.cc/120?img=3"
+    - quote: "I've worked alongside Arnav for close to 6 months now. He has ample command on Start-up's ecosystem, has tough presentation skills & exceptional problem-solving ability. Arnav is an inspirational sales productive leader with a strong sense of how to deliver strategic programs with huge value on our sales team & been very critical in the company's city growth. Any employee would be lucky to have Arnav as a manager, Arnav earns my highest recommendation."
+      author:
+        name: "Jagan Mohan"
+        relation: "Team Member, Led by Arnav"
+        description: "Sr.ASM at Swiggy"
+        to: "https://www.linkedin.com/in/jagan-mohan-ba5a4b128"
+        avatar:
+          src: "https://i.pravatar.cc/120?img=4"
+    - quote: "Arnav is an amazing professional, who brings all of the skills and expertise in account management and team management. It was indeed a wonderful thing to work with him as the Key Account Manager for two years at Uber Eats, under my supervision. He always makes sure to be deeply involved with the problem at hand and doesn't stop till he finds a solution for it. He was most definitely one of my best hires at Uber! His capability to manage multiple aspects of the job within a very short time was very impressive particularly to me. I hereby highly recommend him."
+      author:
+        name: "Sabina Sud"
+        relation: "Arnav's TeamManager"
+        description: "Senior Program Manager"
+        to: "https://www.linkedin.com/in/sabina-sud-b0bb393a"
+        avatar:
+          src: "https://i.pravatar.cc/120?img=5" 

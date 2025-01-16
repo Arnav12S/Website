@@ -33,7 +33,7 @@ useHead({
 
 <template>
   <main class="min-h-screen bg-white dark:bg-gray-900">
-    <div class="max-w-4xl mx-auto px-4 py-8">
+    <div class="max-w-7xl mx-auto px-6 py-6 sm:px-8 lg:px-10 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-sm">
       <div class="mb-8">
         <h2 class="text-3xl font-serif mb-4 text-gray-900 dark:text-white">Reach Out</h2>
         <h6 class="text-lg text-gray-600 dark:text-gray-400">

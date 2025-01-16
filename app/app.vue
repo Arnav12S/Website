@@ -33,8 +33,8 @@ useHead({
 
 useSeoMeta({
   titleTemplate: '%s - Arnav Sudhansh',
-  ogImage: 'https://arnav.blog/social-card.png',
-  twitterImage: 'https://arnav.blog/social-card.png',
+  ogImage: 'https://arnav.blog/logo-light.png',
+  twitterImage: 'https://arnav.blog/logo-light.png',
   twitterCard: 'summary_large_image'
 })
 </script>
