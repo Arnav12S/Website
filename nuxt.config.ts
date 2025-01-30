@@ -39,6 +39,9 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-07-11',
 
   nitro: {
+    experimental: {
+      openAPI: true
+    },
     prerender: {
       routes: ['/',
         '/projects',
@@ -75,17 +78,11 @@ export default defineNuxtConfig({
       }
     }
   },
-
   studio: {
     gitInfo: {
       name: 'nuxt',
       owner: 'Arnav12S',
       url: 'https://github.com/Arnav12S/Website'    
-    }
-  },
-  nitro: {
-    experimental: {
-      openAPI: true
     }
   }
 })
