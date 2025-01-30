@@ -1,9 +1,13 @@
 import { eventHandler, getQuery, setHeader, sendStream } from 'h3';
-import { resumeData } from '../data/resumeData'; // Ensure this path is correct
+import { resumeData } from '../data/resumeData';
 import path from 'path';
 import fs from 'fs';
 
 export default eventHandler(async (event) => {
+    // Set CORS headers
+    setHeader(event, 'Access-Control-Allow-Origin', '*');
+    setHeader(event, 'Access-Control-Allow-Methods', 'GET, OPTIONS');
+    setHeader(event, 'Access-Control-Allow-Headers', 'Content-Type');
 
     try {
         const parsedData = { ...resumeData };

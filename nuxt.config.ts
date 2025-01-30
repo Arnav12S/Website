@@ -82,5 +82,10 @@ export default defineNuxtConfig({
       owner: 'Arnav12S',
       url: 'https://github.com/Arnav12S/Website'    
     }
+  },
+  nitro: {
+    experimental: {
+      openAPI: true
+    }
   }
 })
