@@ -8,7 +8,6 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxt/image',
     '@nuxt/ui',
-    '@nuxthq/studio',
     '@vueuse/nuxt',
     'nuxt-og-image',
     '@nuxthub/core'
@@ -18,18 +17,13 @@ export default defineNuxtConfig({
     enabled: true
   },
 
-  uiPro: {
-    content: true
-  },
-
   colorMode: {
     disableTransition: true
   },
 
   routeRules: {
     '/projects': { index: true },
-    '/projects/**': { middleware: ['project-access'] },
-    '/api/search.json': { prerender: true }
+    '/projects/**': { middleware: ['project-access'] }
   },
 
   future: {
@@ -43,16 +37,17 @@ export default defineNuxtConfig({
       openAPI: true
     },
     prerender: {
-      routes: ['/',
-        '/projects',
+      routes: [
+        '/',          // Home page
+        '/projects'   // Projects page
       ],
       crawlLinks: true,
       ignore: [
-        '/login',
-        '/signup',
-        '/pricing',
-        '/contact',
-        '/projects/**'
+        '/login',     // Ignore login page
+        '/signup',    // Ignore signup page
+        '/pricing',   // Ignore pricing page
+        '/contact',   // Ignore contact page
+        '/projects/**' // Ignore all sub-routes under projects
       ]
     }
   },
@@ -78,11 +73,9 @@ export default defineNuxtConfig({
       }
     }
   },
-  studio: {
-    gitInfo: {
-      name: 'nuxt',
-      owner: 'Arnav12S',
-      url: 'https://github.com/Arnav12S/Website'    
+  content: {
+    preview: {
+      api: 'https://api.nuxt.studio'
     }
   }
 })

@@ -21,7 +21,7 @@
         <UPageGrid>
           <ProjectCard
             v-for="project in filteredProjects"
-            :key="project._path"
+            :key="project.path"
             :project="project"
           />
         </UPageGrid>
@@ -35,10 +35,10 @@ import { ref, computed } from 'vue'
 
 // Get projects list directly without needing a projects.md file
 const { data: projects } = await useAsyncData('project-list', () => 
-  queryContent('projects')
+    queryCollection('projects')
     .where({ _extension: 'md' })
     .sort({ date: -1 })
-    .find()
+    .first()
 )
 
 // Categories for filtering

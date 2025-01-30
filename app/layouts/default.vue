@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import type { ParsedContent } from '@nuxt/content'
 
-const { data: navigation } = await useAsyncData('navigation', () => fetchContentNavigation(), { default: () => [] })
-const { data: files } = useLazyFetch<ParsedContent[]>('/api/search.json', { default: () => [], server: false })
+const { data: navigation } = await useAsyncData('navigation', () => queryCollectionNavigation('docs'), { default: () => [] })
+const { data: files } = await useAsyncData('search', () => queryCollectionSearchSections('docs'))
 
 provide('navigation', navigation)
 provide('files', files)

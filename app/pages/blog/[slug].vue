@@ -4,16 +4,24 @@ import type { BlogPost } from '~/types'
 
 const route = useRoute()
 
-const { data: post } = await useAsyncData(route.path, () => queryContent<BlogPost>(route.path).findOne())
+const { data: post } = await useAsyncData(route.path, () => 
+  queryCollection<BlogPost>('content').path(route.path).first()
+)
 if (!post.value) {
   throw createError({ statusCode: 404, statusMessage: 'Post not found', fatal: true })
 }
 
-const { data: surround } = await useAsyncData(`${route.path}-surround`, () => queryContent('/blog')
-  .where({ _extension: 'md' })
-  .without(['body', 'excerpt'])
-  .sort({ date: -1 })
-  .findSurround(withoutTrailingSlash(route.path))
+const targetPath = '/blog'
+
+// Content v3 - Ensure you have a `content` collection in `content.config.ts`
+const { data: surround } = await useAsyncData(`${route.path}-surround`, () => 
+  queryCollectionItemSurroundings(
+    'content',
+    targetPath,
+    {
+      fields: ['title', 'description', 'navigation']
+    }
+  )
 , { default: () => [] })
 
 const title = post.value.head?.title || post.value.title
@@ -74,10 +82,7 @@ if (post.value.image?.src) {
 
     <UPage>
       <UPageBody prose>
-        <ContentRenderer
-          v-if="post && post.body"
-          :value="post"
-        />
+        <ContentRenderer v-if="post" :value="post" />
 
         <hr v-if="surround?.length">
 

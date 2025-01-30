@@ -4,11 +4,10 @@ import Header from '~/components/AppHeader.vue'
 import Footer from '~/components/AppFooter.vue'
 import AskAI from '~/components/AskAI.vue'
 import { useLinks } from './composables/useLinks'
-import type { ParsedContent } from '@nuxt/content'
 
 const { links } = useLinks()
-const { data: navigation } = await useAsyncData('navigation', () => fetchContentNavigation())
-const { data: files } = useLazyFetch<ParsedContent[]>('/api/search.json', { default: () => [], server: false })
+const { data: navigation } = await useAsyncData('navigation', () => queryCollectionNavigation('docs'))
+const { data: files } = await useAsyncData('search', () => queryCollectionSearchSections('docs'))
 
 provide('navigation', navigation)
 provide('files', files)

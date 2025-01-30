@@ -8,7 +8,7 @@ interface Props {
     company_logo_type?: 'square' | 'horizontal'
     category: string
     tags: string[]
-    _path: string
+    path: string
   }
 }
 
@@ -17,7 +17,7 @@ defineProps<Props>()
 
 <template>
   <NuxtLink 
-    :to="project._path"
+    :to="project.path"
     class="group block"
   >
     <div class="flex flex-col h-full overflow-hidden rounded-lg bg-white dark:bg-gray-800 shadow-sm hover:shadow-lg transition-all duration-300">

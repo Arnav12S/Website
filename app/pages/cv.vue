@@ -246,7 +246,7 @@
 import { ref, onMounted } from 'vue'
 
 // Import your resume data
-const resumeData = ref(await queryContent('cv').findOne())
+const resumeData = ref(await queryCollection('cv').path(route.path).first())
 const showTOC = ref(false)
 
 // Define sections for TOC and searchable content

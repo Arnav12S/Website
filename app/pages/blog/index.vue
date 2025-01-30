@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import type { BlogPost } from '~/types'
 
-const { data: page } = await useAsyncData('blog', () => queryContent('/blog').findOne())
+const { data: page } = await useAsyncData('blog', () => 
+  queryCollection('content').path(route.path).first()
+)
 if (!page.value) {
   throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
 }
 
-const { data: posts } = await useAsyncData('posts', () => queryContent<BlogPost>('/blog')
+const { data: posts } = await useAsyncData('posts', () => 
+  queryCollection<BlogPost>('content')
   .where({ _extension: 'md' })
   .sort({ date: -1 })
-  .find())
+  .first()
+)
 
 useSeoMeta({
   title: page.value.title,
@@ -33,7 +37,7 @@ defineOgImageComponent('Saas')
         <UBlogPost
           v-for="(post, index) in posts"
           :key="index"
-          :to="post._path"
+          :to="post.path"
           :title="post.title"
           :description="post.description"
           :image="post.image"

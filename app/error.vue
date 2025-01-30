@@ -1,55 +1,55 @@
 <script setup lang="ts">
-import type { ParsedContent } from '@nuxt/content'
-import type { NuxtError } from '#app'
+import { ref, computed } from 'vue'
+import Header from '~/components/AppHeader.vue'
+import Footer from '~/components/AppFooter.vue'
+import AskAI from '~/components/AskAI.vue'
+import { useLinks } from './composables/useLinks'
 
-defineProps({
-  error: {
-    type: Object as PropType<NuxtError>,
-    required: true
-  }
-})
+const { links } = useLinks()
+const { data: navigation } = await useAsyncData('navigation', () => queryCollectionNavigation('docs'))
+const { data: files } = await useAsyncData('search', () => queryCollectionSearchSections('docs'))
+
+provide('navigation', navigation)
+provide('files', files)
+
+// Color Mode Handling
+const colorMode = useColorMode()
+const color = computed(() => colorMode.value === 'dark' ? '#111827' : 'white')
 
 useHead({
+  meta: [
+    { charset: 'utf-8' },
+    { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+    { key: 'theme-color', name: 'theme-color', content: color }
+  ],
+  link: [
+    { rel: 'icon', href: '/favicon.ico' }
+  ],
   htmlAttrs: {
     lang: 'en'
   }
 })
 
 useSeoMeta({
-  title: 'Page not found',
-  description: 'We are sorry but this page could not be found.'
+  titleTemplate: '%s - Arnav Sudhansh',
+  ogImage: 'https://arnav.blog/logo-light.png',
+  twitterImage: 'https://arnav.blog/logo-light.png',
+  twitterCard: 'summary_large_image'
 })
-
-const { data: navigation } = await useAsyncData('navigation', () => fetchContentNavigation(), { 
-  default: () => [], 
-  immediate: true 
-})
-const { data: files } = useLazyFetch<ParsedContent[]>('/api/search.json', { default: () => [], server: false })
-
-provide('navigation', navigation)
 </script>
 
 <template>
-  <div>
-    <AppHeader />
-
-    <UMain>
-      <UContainer>
-        <UPage>
-          <UPageError :error="error" />
-        </UPage>
-      </UContainer>
-    </UMain>
-
-    <AppFooter />
-
+  <div class="min-h-screen flex flex-col">
+    <NuxtLoadingIndicator />
+    <Header :links="links" />
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+    <AskAI />
+    <Footer />
     <ClientOnly>
-      <LazyUContentSearch
-        :files="files"
-        :navigation="navigation"
-      />
+      <LazyUContentSearch :files="files" :navigation="navigation" :links="links" />
     </ClientOnly>
-
     <UNotifications />
   </div>
 </template>
