@@ -12,42 +12,34 @@ import { ref, computed } from 'vue'
 import { useAsyncData } from '#app'
 
 // Fetch navigation and search sections
-const { data: navigation } = await useAsyncData('navigation', () => queryCollectionNavigation('docs'))
-const { data: files } = await useAsyncData('search', () => queryCollectionSearchSections('docs'))
+const { data: navigation } = await useAsyncData('navigation', () => queryCollectionNavigation('content'))
+const { data: files } = await useAsyncData('search', () => queryCollectionSearchSections('content'))
 
 const searchTerm = ref('')
 
-// Enhance the search content for CV
-const enhancedFiles = computed(() => {
-  return files.value.map(item => {
-    if (item.path === '/cv') {
-      // Combine all relevant fields into a single searchable string
-      const searchableContent = [
-        item.title,
-        item.description,
-        item.summary,
-        ...item.experience.flatMap(exp => [
-          exp.title,
-          exp.company,
-          exp.duration,
-          exp.location,
-          ...exp.details
-        ]),
-        ...item.education.flatMap(edu => [
-          edu.degree,
-          edu.institution,
-          edu.location,
-          edu.year
-        ]),
-        ...item.skills
-      ].join(' ').toLowerCase() // Convert to lowercase for case-insensitive search
+// Define the interface for search items
+interface SearchItem {
+  id: string
+  title: string
+  titles: string[]
+  level: number
+  content: string
+  // Add any other properties that might be available
+}
 
-      return {
-        ...item,
-        _searchContent: searchableContent
-      }
+// Enhance the search content
+const enhancedFiles = computed(() => {
+  return files.value.map((item: SearchItem) => {
+    // Create a searchable content string from the available properties
+    const searchableContent = [
+      item.title,
+      item.content
+    ].filter(Boolean).join(' ').toLowerCase()
+
+    return {
+      ...item,
+      _searchContent: searchableContent
     }
-    return item
   })
 })
 </script>

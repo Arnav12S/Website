@@ -1,125 +1,76 @@
-![nuxt-ui-saas-social-card](https://github.com/nuxt-ui-pro/saas/assets/739984/50bf4ddd-c4d5-47e5-a09e-0f699513dfb5)
+# Personal Website with Nuxt Studio, UI Pro, and Nuxt Hub
 
-# Nuxt UI Pro - SaaS template
+A modern, optimized website built with:
+- [Nuxt 3](https://nuxt.com)
+- [Nuxt Content](https://content.nuxt.com) with [Nuxt Studio](https://nuxt.studio) integration
+- [Nuxt UI Pro](https://ui.nuxt.com/pro)
+- [Nuxt Hub](https://hub.nuxt.com) for hosting
 
-[![Nuxt UI Pro](https://img.shields.io/badge/Made%20with-Nuxt%20UI%20Pro-00DC82?logo=nuxt.js&labelColor=020420)](https://ui.nuxt.com/pro)
+## Features
 
-- [Live demo](https://saas-template.nuxt.dev/)
-- [Play on Stackblitz](https://stackblitz.com/github/nuxt-ui-pro/saas)
-- [Documentation](https://ui.nuxt.com/pro/getting-started)
-
-[![Deploy to NuxtHub](https://hub.nuxt.com/button.svg)](https://hub.nuxt.com/new?repo=nuxt-ui-pro/saas)
-
-## Quick Start
-
-```bash [Terminal]
-npx nuxi init -t github:nuxt-ui-pro/saas
-```
+- 🔥 Live preview with Nuxt Studio
+- 🎨 Beautiful UI components with Nuxt UI Pro
+- 📝 Content management with Nuxt Content
+- 🚀 One-click deployment with Nuxt Hub
 
 ## Setup
 
-Make sure to install the dependencies:
-
 ```bash
-# npm
-npm install
-
-# pnpm
+# Install dependencies
 pnpm install
 
-# yarn
-yarn install
+# Run development server
+pnpm dev
 
-# bun
-bun install
+# Build for production
+pnpm build
+
+# Preview production build
+pnpm preview
+
+# Deploy to Nuxt Hub
+pnpm deploy
 ```
 
-## Development Server
+## Nuxt Studio
 
-Start the development server on `http://localhost:3000`:
+This project is configured to work with Nuxt Studio, allowing you to edit content in a visual editor.
 
-```bash
-# npm
-npm run dev
+1. Make sure your content is pushed to a GitHub repository
+2. Visit [Nuxt Studio](https://nuxt.studio) and connect your repository
+3. Edit content in the Nuxt Studio interface
+4. Preview changes in real-time
 
-# pnpm
-pnpm run dev
+## Nuxt Hub Deployment
 
-# yarn
-yarn dev
+The project is configured to deploy to Nuxt Hub:
 
-# bun
-bun run dev
+1. Make sure you have the proper environment variables set:
+   - `NUXT_HUB_PROJECT_KEY`
+   - `NUXT_HUB_ENV`
+
+2. Run the deploy command:
+   ```bash
+   pnpm deploy
+   ```
+
+## Content Structure
+
+Content is organized in the `content/` directory:
+- Blog posts in `content/3.blog/`
+- Projects in `content/projects/`
+- Other pages as YAML files in the root of the content directory
+
+## Environment Variables
+
+Copy `.env.example` to `.env` and fill in the following variables:
+
+```
+NUXT_HUB_PROJECT_KEY=your-project-key
+NUXT_HUB_ENV=production
+NUXT_UI_PRO_LICENSE=your-license-key
 ```
 
-## Production
+## License
 
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
-
-## Nuxt Studio integration
-
-Add `@nuxthq/studio` dependency to your package.json:
-
-```bash
-# npm
-npm install --save-dev @nuxthq/studio
-
-# pnpm
-pnpm add -D @nuxthq/studio
-
-# yarn
-yarn add -D @nuxthq/studio
-
-# bun
-bun add -d @nuxthq/studio
-```
-
-Add this module to your `nuxt.config.ts`:
-
-```ts
-export default defineNuxtConfig({
-  ...
-  modules: [
-    ...
-    '@nuxthq/studio'
-  ]
-})
-```
-
-Read more on [Nuxt Studio docs](https://nuxt.studio/docs/get-started/setup).
-
-## Renovate integration
-
-Install [Renovate GitHub app](https://github.com/apps/renovate/installations/select_target) on your repository and you are good to go.
+All rights reserved.

@@ -245,6 +245,9 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 
+// Import useRoute composable
+const route = useRoute()
+
 // Import your resume data
 const resumeData = ref(await queryCollection('cv').path(route.path).first())
 const showTOC = ref(false)
